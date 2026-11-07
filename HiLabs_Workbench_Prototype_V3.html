@@ -468,11 +468,11 @@ const FKEYS=FIELDS.flatMap(s=>s[1].map(f=>f[0]));
 const FLABEL=Object.fromEntries(FIELDS.flatMap(s=>s[1]));
 
 /* ================= Data: every fact mirrors the Synthetic Data Annex ================= */
-const ORDER=['pranav','mmridul','vraj','shruti','shlok'];
+const ORDER=['pranav','mridul','vraj','shruti','shlok'];
 const P={
-pranav:{key:'pranav',id:'SYN-004',name:'Pranav',age:36,plan:'Medicaid',cond:'Behavioral-health discharge',lvl:'hi',owner:'Maria, RN · BH co-manager Asha, LCSW',
+pranav:{key:'pranav',id:'SYN-004',name:'Pranav',age:36,plan:'Medicaid',cond:'Behavioral-health discharge',lvl:'hi',owner:'Maria, RN · BH co-manager Jordan, LCSW',
  score:{u:40,d:30,b:20,n:10},sw:{u:'Behavioral-health discharge; current safety not re-checked.',d:'Same-day review; callback window 09:00–11:00.',b:'Shared shelter phone and housing loss.',n:'New discharge awaiting the first RN review.'},
- tie:'Tied at 100 with Mmridul. The behavioral-health safety rule puts Pranav first.',
+ tie:'Tied at 100 with Mridul. The behavioral-health safety rule puts Pranav first.',
  due:'09:00',today:true,dueL:'Today',tags:['barriers'],
  trig:{k:'ADT ALERT',c:'adt',t:'Behavioral-health discharge',at:'2026-10-31T11:00:00-04:00'},
  flags:[{t:'Safety not re-checked',tone:'risk'},{t:'Shared shelter phone',tone:'warn'},{t:'Lost housing',tone:'warn',cid:'housing',okT:'Housing verified'}],
@@ -493,14 +493,14 @@ pranav:{key:'pranav',id:'SYN-004',name:'Pranav',age:36,plan:'Medicaid',cond:'Beh
   {d:'Housing',f:'Lost housing; shelter (30 Oct) vs “stable rented room” (15 Apr)',st:'conflict',src:['SOC-004B','SOC-004A'],fr:'fresh',sn:'Two social-needs screens',at:'2026-10-30T16:00:00-04:00',cid:'housing'},
   {d:'Phone',f:'216-555-0104 · shelter reception desk (shared)',st:'single',src:['OUT-004'],fr:'fresh',sn:'Contact log',at:'2026-10-31T10:00:00-04:00'},
   {d:'Housing help',f:'Housing navigation accepted · placement unconfirmed',st:'single',src:['SVC-004'],fr:'fresh',sn:'Referral log',at:'2026-10-31T10:00:00-04:00'}],
- care:['<strong>Willow Community Clinic (PCP)</strong>','216-555-0124 · Tue 3 Nov, 10:30','BH co-manager: Asha, LCSW'],careSrc:'ACC-004',
+ care:['<strong>Willow Community Clinic (PCP)</strong>','216-555-0124 · Tue 3 Nov, 10:30','BH co-manager: Jordan, LCSW'],careSrc:'ACC-004',
  tl:[{at:'31 Oct 11:00',t:'Discharged · Willow Crisis Unit',p:'Disposition: home; support to confirm.',src:'ADT-004'},{at:'31 Oct 10:00',t:'Social-work contact check',p:'Shelter reception phone; callback arranged.',src:'OUT-004'},{at:'31 Oct 10:00',t:'Housing navigation referral accepted',p:'Social worker assigned; placement unconfirmed.',src:'SVC-004'},{at:'31 Oct 09:00',t:'Discharge care summary',p:'Safety screen copied forward from earlier.',src:'EHR-004'},{at:'30 Oct 16:00',t:'Social-needs screen',p:'Lost housing; shelter placement; food support requested.',src:'SOC-004B'},{at:'12 Oct',t:'Sertraline 50 mg filled',p:'30-day supply.',src:'RX-004'},{at:'1 Oct',t:'Depression follow-up visit (claim)',p:'Billed 24 days later.',src:'CLM-004'}],
  routes:[{l:'Shelter reception desk (shared)',ph:'216-555-0104',s:'gated',n:'Neutral callback request only · 09:00–11:00'},{l:'Private callback to Maria',ph:'216-555-0190',s:'ok',n:'When he calls back: confirm he can talk privately'},{l:'Willow Community Clinic',ph:'216-555-0124',s:'ok',n:'Book a mental-health visit; confirm 3 Nov transport'}],
  script:'“Hello, this is Maria from the health plan. Could you please ask Pranav to call Maria at 216-555-0190? Thank you.”',
  sampleRoute:1,
  sample:'Pranav called back 10:20 from the shelter desk, moved to a private room. Name and DOB verified. Denies SI, feels safe now, mood low. Taking sertraline 50 mg daily, 9 days left. Staying at Eastside shelter, bed for 30 days. Needs a ride to clinic Tue 3 Nov. Asked about the food pantry. No phone of his own, uses the shelter desk; prepaid phone 216-555-0177 coming. No BH appointment booked yet. Goal: keep a bed and see a counselor this week. Plan: book BH visit before Sat 7 Nov, call housing navigator.',
  af:{plan:['Pranav · Medicaid · SYN-004','MEM-004'],consent:['Shared line: neutral messages only','OUT-004'],language:['English','MEM-004'],phone:['216-555-0104 · shelter desk (shared)','OUT-004'],besttime:['09:00–11:00','OUT-004'],event:['Discharged 31 Oct, 11:00','ADT-004'],facility:['Willow Crisis Unit','ADT-004'],reason:['Behavioral-health episode','ADT-004'],taking:['Sertraline 50 mg daily (prescribed)','EHR-004'],supply:['Filled 12 Oct; supply to 10 Nov','RX-004',1],mood:['Earlier screen copied forward; not current','EHR-004'],bhvisit:['None found','ACC-004'],housing:['Shelter placement','SOC-004B'],food:['Asked for food support','SOC-004B'],transport:['Needs clinic transport','SOC-004B'],phoneaccess:['Uses the shelter reception phone','OUT-004'],referrals:['Housing navigation accepted; placement unconfirmed','SVC-004'],nextappt:['Tue 3 Nov 10:30 · Willow Community Clinic','ACC-004']}},
-mmridul:{key:'mmridul',id:'SYN-001',name:'Mmridul',age:72,plan:'Medicare Advantage PPO',cond:'Heart failure',lvl:'hi',owner:'Maria, RN',
+mridul:{key:'mridul',id:'SYN-001',name:'Mridul',age:72,plan:'Medicare Advantage PPO',cond:'Heart failure',lvl:'hi',owner:'Maria, RN',
  score:{u:40,d:30,b:20,n:10},sw:{u:'Heart-failure discharge with an unexplained water-pill dose change.',d:'Inside the 2-business-day contact window; slot 10:00.',b:'Dose conflict, and transport not arranged.',n:'New discharge awaiting the first RN review.'},
  tie:'Tied at 100 with Pranav, who goes first under the behavioral-health safety rule.',
  due:'10:00',today:true,dueL:'Today',tags:['meds'],
@@ -526,10 +526,10 @@ mmridul:{key:'mmridul',id:'SYN-001',name:'Mmridul',age:72,plan:'Medicare Advanta
   {d:'Last claim',f:'Heart-failure office visit, 15 Sep',st:'single',src:['CLM-001'],fr:'lag',sn:'Claim (45-day lag is normal)',at:'2026-09-15T12:00:00-04:00'}],
  care:['<strong>Dr. Rowan Ash (PCP)</strong>','216-555-0121 · Thu 5 Nov, 10:00','Transport: not yet requested'],careSrc:'ACC-001',
  tl:[{at:'30 Oct 14:00',t:'Discharged · Harbor Hospital',p:'Received 14:05 and again 14:07. The second message was merged; no duplicate task.',src:'ADT-001A'},{at:'30 Oct 13:30',t:'Discharge summary · furosemide 40 mg',p:'No reason given for the dose change.',src:'EHR-001B'},{at:'30 Oct 13:00',t:'Bedside contact check',p:'Phone verified with him.',src:'OUT-001'},{at:'30 Oct 10:00',t:'Labs · potassium 4.2, creatinine 1.1',p:'Final results.',src:'LAB-001A'},{at:'28 Oct 10:00',t:'Admitted · heart failure',p:'Harbor Hospital.',src:'ADT-001C'},{at:'1 Oct',t:'Furosemide 20 mg filled',p:'30-day supply.',src:'RX-001'}],
- routes:[{l:'Mmridul (member)',ph:'216-555-0101',s:'ok',n:'Verified 30 Oct · best 09:00–11:00'},{l:'Dr. Rowan Ash’s office',ph:'216-555-0121',s:'ok',n:'Dose confirmation and transport'}],
+ routes:[{l:'Mridul (member)',ph:'216-555-0101',s:'ok',n:'Verified 30 Oct · best 09:00–11:00'},{l:'Dr. Rowan Ash’s office',ph:'216-555-0121',s:'ok',n:'Dose confirmation and transport'}],
  sampleRoute:0,
  sample:'Spoke w/ pt 09:40, DOB verified. Has furosemide 20 mg bottle only, taking 1 daily, ran out Fri. Never got the 40 mg. Wt 82 kg, usual 80. Ankles more swollen, SOB on stairs, no chest pain. No falls. Lives alone, neighbor checks daily. Needs a ride to Dr Ash Thu 5 Nov 10:00. Goal: stay out of the hospital and keep gardening. Will call Dr Ash re dose today.',
- af:{plan:['Mmridul · MA PPO · SYN-001','MEM-001'],language:['English','OUT-001'],phone:['216-555-0101 · verified 30 Oct','OUT-001'],besttime:['09:00–11:00','OUT-001'],event:['Discharged 30 Oct, 14:00','ADT-001A'],facility:['Harbor Hospital','ADT-001A'],reason:['Heart failure','ADT-001A'],taking:['Lists disagree: 40 mg (discharge) vs 20 mg (PCP)','EHR-001B'],supply:['20 mg supply ended 30 Oct','RX-001',1],prescriber:['Needed: 40 mg vs 20 mg','EHR-001A'],housing:['Lives alone; neighbor checks in','SOC-001'],transport:['Needed for PCP visit; not requested','SVC-001'],nextappt:['Thu 5 Nov 10:00 · Dr. Rowan Ash','ACC-001'],referrals:['Transport not yet requested','SVC-001']}},
+ af:{plan:['Mridul · MA PPO · SYN-001','MEM-001'],language:['English','OUT-001'],phone:['216-555-0101 · verified 30 Oct','OUT-001'],besttime:['09:00–11:00','OUT-001'],event:['Discharged 30 Oct, 14:00','ADT-001A'],facility:['Harbor Hospital','ADT-001A'],reason:['Heart failure','ADT-001A'],taking:['Lists disagree: 40 mg (discharge) vs 20 mg (PCP)','EHR-001B'],supply:['20 mg supply ended 30 Oct','RX-001',1],prescriber:['Needed: 40 mg vs 20 mg','EHR-001A'],housing:['Lives alone; neighbor checks in','SOC-001'],transport:['Needed for PCP visit; not requested','SVC-001'],nextappt:['Thu 5 Nov 10:00 · Dr. Rowan Ash','ACC-001'],referrals:['Transport not yet requested','SVC-001']}},
 vraj:{key:'vraj',id:'SYN-003',name:'Vraj',age:44,plan:'Medicaid',cond:'Asthma · repeat ED use',lvl:'md',owner:'Maria, RN',
  score:{u:30,d:30,b:20,n:10},sw:{u:'New admission with no diagnosis given.',d:'Same-day check; slot 11:00.',b:'Phone disconnected; no other contact on file.',n:'New event awaiting RN review.'},
  due:'11:00',today:true,dueL:'Today',tags:['barriers'],
@@ -617,7 +617,7 @@ shlok:{key:'shlok',id:'SYN-002',name:'Shlok',age:58,plan:'Commercial PPO',cond:'
 };
 /* Source records: [dataset, source system, happened, received, fields] */
 const R={
-'MEM-001':['Member & eligibility','Plan enrollment','1 Nov 22:00','2 Nov 05:00',[['Member','Mmridul · SYN-001'],['Date of birth','18 Jun 1954'],['Plan','Medicare Advantage PPO · active'],['Language','English'],['Phone','216-555-0101']]],
+'MEM-001':['Member & eligibility','Plan enrollment','1 Nov 22:00','2 Nov 05:00',[['Member','Mridul · SYN-001'],['Date of birth','18 Jun 1954'],['Plan','Medicare Advantage PPO · active'],['Language','English'],['Phone','216-555-0101']]],
 'MEM-002':['Member & eligibility','Plan enrollment','1 Nov 22:00','2 Nov 05:00',[['Member','Shlok · SYN-002'],['Date of birth','2 Mar 1968'],['Plan','Commercial PPO · active'],['Language','Spanish'],['Phone','216-555-0102']]],
 'MEM-003':['Member & eligibility','Plan enrollment','1 Nov 22:00','2 Nov 05:00',[['Member','Vraj · SYN-003'],['Date of birth','11 Aug 1982'],['Plan','Medicaid managed care · active'],['Language','English'],['Phone','216-555-0103']]],
 'MEM-004':['Member & eligibility','Plan enrollment','1 Nov 22:00','2 Nov 05:00',[['Member','Pranav · SYN-004'],['Date of birth','23 Apr 1990'],['Plan','Medicaid managed care · active'],['Language','English'],['Phone','216-555-0104']]],
@@ -683,13 +683,13 @@ const FR={fresh:'Fresh',lag:'Normal lag',stale:'Stale',down:'Feed down',missing:
 const OUTC={prep:'Preparation only',connected:'Connected',noanswer:'No answer',voicemail:'Left voicemail',callback:'Callback request left'};
 const TOUR=[
  {go:'#queue',sel:'pranav',el:'#qlist',t:'08:00 · Why each member is on top, before any click',x:'Every row shows its trigger (with its age), its risk flags and the next best action. No one has to open a profile to know who is urgent.'},
- {go:'#queue',sel:'pranav',el:'#pane',t:'The score explains itself',x:'Urgency, deadline, barriers and new events add up to 100. The tie rule says why Pranav goes before Mmridul.'},
- {go:'#member-mmridul',el:'#resolve',t:'Two lists disagree. Maria decides.',x:'The discharge summary and the PCP list sit side by side, each with its source and age. After the call, she picks what she verified and clicks Confirm clinical reality.'},
+ {go:'#queue',sel:'pranav',el:'#pane',t:'The score explains itself',x:'Urgency, deadline, barriers and new events add up to 100. The tie rule says why Pranav goes before Mridul.'},
+ {go:'#member-mridul',el:'#resolve',t:'Two lists disagree. Maria decides.',x:'The discharge summary and the PCP list sit side by side, each with its source and age. After the call, she picks what she verified and clicks Confirm clinical reality.'},
  {go:'#member-vraj',el:'#missing',t:'“Admitted” with a blank diagnosis',x:'Instead of calling a dead number blind, the workbench routes Maria through the hospital and PCP first. Try recording the hospital’s answer.'},
  {go:'#member-vraj',el:'#lag',t:'What the claims portal misses',x:'Claims show one ED visit in August. Real-time hospital alerts show four events in five weeks. The shaded zone is the claims blind spot.'},
  {go:'#member-vraj',el:'#cstrip',t:'Dead number? Alternatives sit right beside it',x:'The disconnected phone is flagged red, with one-tap routes to the hospital and the PCP. Social constraints sit in the same strip.'},
- {go:'#outreach-mmridul',el:'#notescard',t:'Rough notes in, structured assessment out',x:'Click “Use sample notes”, then “Auto-draft assessment”. The AI reads Maria’s shorthand and fills the 40-field form.'},
- {go:'#outreach-mmridul',el:'#assess',t:'Yellow means pending, not saved',x:'Every AI value stays yellow, with the phrase it came from, until Maria reviews it and clicks Approve & Submit.'},
+ {go:'#outreach-mridul',el:'#notescard',t:'Rough notes in, structured assessment out',x:'Click “Use sample notes”, then “Auto-draft assessment”. The AI reads Maria’s shorthand and fills the 40-field form.'},
+ {go:'#outreach-mridul',el:'#assess',t:'Yellow means pending, not saved',x:'Every AI value stays yellow, with the phrase it came from, until Maria reviews it and clicks Approve & Submit.'},
  {go:null,el:'#toggles',t:'When data breaks, the workbench says so',x:'Turn on “Pharmacy feed down” or “Pause AI assist”, then revisit a member. Missing data shows as unknown, never as no.'}
 ];
 
@@ -744,7 +744,7 @@ function extract(p,text){
 
 /* ================= State ================= */
 let S;
-const fresh=()=>({filter:'now',q:'',sel:'pranav',cur:'mmridul',ai:true,pbm:true,view:{},explain:false,acts:{},sess:{},res:{},inv:{},tour:-1});
+const fresh=()=>({filter:'now',q:'',sel:'pranav',cur:'mridul',ai:true,pbm:true,view:{},explain:false,acts:{},sess:{},res:{},inv:{},tour:-1});
 S=fresh();
 const acts=p=>S.acts[p.key]||(S.acts[p.key]=p.actions.map(a=>({s:'open',t:a.t,r:''})));
 const sess=p=>S.sess[p.key]||(S.sess[p.key]={route:p.dr||0,out:'prep',notes:'',ai:{},ed:{},rej:{},drafted:false,editing:null,tab:'a',ok:false,submitted:false,ack:false,rcpt:'',scan:false});
@@ -862,7 +862,7 @@ function vMember(p){
  const b=p.banner,view=S.view[p.key]||'ev';
  let tone=b.tone,ic=b.ic,title=b.t,body=!S.pbm&&b.xd?b.xd:b.x;
  const allRes=p.conflicts&&p.conflicts.every(c=>resolved(p,c.cid));
- if(p.key==='mmridul'&&allRes){tone='ok';ic='✓';title='Dose conflict resolved';body='Maria recorded: '+esc(res(p,'dose').what)+'. The discharge and PCP lists stay on file; the verified answer now leads.';}
+ if(p.key==='mridul'&&allRes){tone='ok';ic='✓';title='Dose conflict resolved';body='Maria recorded: '+esc(res(p,'dose').what)+'. The discharge and PCP lists stay on file; the verified answer now leads.';}
  if(p.missing&&inv(p).s1.done&&inv(p).s1.choice!=='Could not reach'){tone='ok';ic='✓';title='Setting verified: '+inv(p).s1.choice;body='Recorded from the Elm Hospital facility team'+(inv(p).s1.reason?': '+esc(inv(p).s1.reason):'')+'. '+(inv(p).s3.done?'A new number is saved as unverified.':'Next: a working number for Vraj.');}
  const brief=S.ai?`<ol class="brief">${p.brief.map((l,i)=>{const d=down(l);return `<li><span class="num">${i+1}</span><div>${esc(d?l.td:l.t)}${d?`<div class="prov">${st('unknown')}${fr('down')}</div>`:`<div class="prov">${st(l.st)}</div>`+prov(l.sn,l.at,l.src)}</div></li>`;}).join('')}</ol><p class="hint" style="margin:12px 0 0">The brief only restates source records. It draws no clinical conclusions.</p>`:`<div class="paused"><strong>AI brief paused.</strong> Nothing below has changed: every sourced fact is still in the evidence table.</div>`;
  const rows=p.ev.map(e=>{
