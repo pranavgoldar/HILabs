@@ -1,44 +1,42 @@
-# Test results · submission walkthrough
+# Test results · focused workspace redesign
 
-**976 of 976 enabled controls respond; 0 console errors.**
+**1270 of 1270 enabled controls respond; 0 console errors.**
 
-Scope: automated Chromium clicks on every rendered enabled button, link, checkbox and radio in 18 enumerated states across all 13 routes: Queue, Team, About, five Member views, and the notes/review states of five Call views. All details were expanded. Downloads were verified as downloads, and selected controls as selected. Fifteen disabled controls were counted separately because their prerequisites were unmet. New role, clock, identity, handover, reminder, consent, retry, closure and escalation transitions also have dedicated functional checks. This count describes the tested states, not every possible combination of user-entered text.
-
-Two navigation issues found by the audit were corrected: Skip to main content preserves the current route and moves focus; Evidence & records opens the section with visible feedback. All 23 affected control checks passed after those corrections; the other 953 checks remained valid.
+The control audit clicks every enabled button, link, checkbox and radio in 20 enumerated desktop states across 15 routes: Today, Team, About, Data & Trust, Saved Work, five Member views, and notes/review for each of five Call views. Details are expanded. Downloads are verified as downloads and selected controls as selected. 15 controls with unmet prerequisites were counted separately. The figure describes enumerated states, not every possible input combination.
 
 | Check | Result |
 |---|---|
-| New functional suite | Chromium and WebKit pass: welcome, overdue clock, Jordan, consent, Spanish review, cover acceptance, closure blockers, identity hold, retry, escalation and Team view |
-| Responsive views | 13 routes × 3 widths (390, 1366, 1920 px) in each engine: 78 checks, no horizontal overflow |
-| Existing workflow regression | 66 additional route/width checks in Chromium at 320, 390, 430, 768, 1024 and 1440 px; all 75 source dialogs open; no script errors |
-| Drafted fields from existing samples | Pranav 24; Mridul 24; Vraj 15; Shruti 24; Shlok 21 of 40, unchanged |
-| Accessibility | 18 desktop/phone route scans and 6 additional states (welcome, Jordan, consent, handover, Spanish pending, escalation); zero detected WCAG A/AA violations after fixing consent-mask list markup |
-| Timers | Deterministic clock verifies prep stops at call start; note timing starts on first keystroke; idle is capped at 60 seconds; hidden-tab time is excluded |
-| Guided tour | All 12 highlighted targets visible without overlay overlap at 390 px |
-| Writeback | Failure + reload + Retry preserves the same key and one approved-call count |
-| Closure | Missing evidence disables closure; completion evidence, clinical attestation, approved assessment and receipt enable a final manual RN action |
-| Keyboard | J/K queue movement, Enter member view, C call route; / search and ? sheet are available outside text entry |
-| Delivery | Downloaded HTML is the same full source used to build index.html; no framework or external JS dependency |
-| Frozen files | Both Excel SHA-256 hashes match the supplied versions; no deck or workbook edited |
+| New workspace workflows | Chromium and WebKit pass: phone More menu; all 12 datasets; source dialogs; medication comparison; section review and receipt history; three time-model scenarios |
+| Responsive layout | 15 routes × 5 widths (320, 390, 768, 1366, 1920 px), in both engines: 150 checks, no horizontal overflow |
+| Existing workflows | Chromium and WebKit pass: welcome, overdue clock, Jordan, consent masking, Spanish review, accepted cover, closure, identity hold, retry, escalation and Team view |
+| Existing regression | 66 route/width checks and all 75 source dialogs pass in Chromium; zero script errors |
+| Assessment samples | 24 / 24 / 15 / 24 / 21 of 40 fields drafted for Pranav / Mridul / Vraj / Shruti / Shlok, unchanged |
+| Human review | Section review persists without approving. Editing a field invalidates that section’s review. Final RN sign-off is still required |
+| Accessibility | 22 route/width WCAG A/AA scans: zero detected violations; high-contrast light theme and visible focus states retained |
+| Session timing | Prep and documentation boundaries, 60-second idle cap and hidden-tab pause pass deterministic checks |
+| Tour | All 12 phone highlights remain visible without overlay overlap |
+| Saved work | A signed entry retains its field counts and receipt; starting a new call cannot replace an earlier receipt |
+| Clinical and privacy boundaries | Prescriber gate, blocked phone, unknown values, consent masking and persistent escalation remain intact |
+| Data integrity | Both supplied Excel SHA-256 hashes match; no patient, source record, clinical value, score or submitted target changed |
+| Dependencies | Single vanilla HTML/CSS/JS source; no new external JS library or UI framework |
 
-## Reproduce locally
+## Reproduce
 
 ```bash
 python3 scripts/build_index.py
 python3 -m http.server 8765
-# In another terminal, with Playwright and its browsers installed:
+# In another terminal, with Playwright browsers installed:
 python3 tests/test_workbench.py
 python3 tests/test_submission_features.py
 ENGINE=webkit python3 tests/test_submission_features.py
 python3 tests/test_session_timers.py
+python3 tests/test_product_redesign.py
+ENGINE=webkit python3 tests/test_product_redesign.py
 python3 tests/test_controls.py
 ```
 
-## Limits and missing facts
+The source and downloadable HTML are generated from the same file. The submitted deck and both Excel workbooks are frozen. The change log contains the submission mapping and judge walkthrough.
 
-- This workspace cannot test physical Android/iPhone devices. Chromium and WebKit check browser behavior and phone layouts; this is not physical-device certification.
-- Real calls, messages, identity joins, RN authentication and CM writeback remain simulated as required. Client-side consent masking demonstrates behavior; production would require server-side access controls.
-- A cover RN name and data-quality reviewer identity were not supplied. The UI marks them TBD and requires the tester to enter them; no static names were invented.
-- Session measurements are labelled “Your session · not pilot data.” Contact rates and safety outcomes cannot be inferred from sample calls; Team view says so explicitly.
+## Scope of the prototype
 
-The full slide/annex mapping, twelve-step guided-demo text and two-minute judge walkthrough are in [CHANGELOG.md](CHANGELOG.md).
+Browser and phone-layout checks use Chromium and WebKit. Physical-device certification is outside this workspace. Calls, messages, identity joins, cover acceptance and writeback remain explicit simulations. Consent masking demonstrates UI behavior; real authorization requires server enforcement. Session measurements are labelled as session data, and the time-model scenarios remain assumptions from the register. Cover RN and reviewer names remain TBD until entered by the tester.

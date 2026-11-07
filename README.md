@@ -80,3 +80,14 @@ Every push to the production branch redeploys automatically.
 The prototype now demonstrates all 16 requirements from the final product prompt. See [CHANGELOG.md](CHANGELOG.md) for the deck/annex mapping, twelve-step tour and two-minute judge walkthrough. See [TEST_RESULTS.md](TEST_RESULTS.md) for scoped verification results.
 
 All state is local to the browser and retained across reloads with storage exceptions handled. Reset clears demo state. The demo clock, role, consent, failure states, evidence and session counters are simulated; none represent real clinical results. Session timers use active time, pause at 60 seconds idle or when hidden, and exclude away time after reload. All 75 source records are embedded in the single HTML source; no framework, model or external JS dependency was added. `build_index.py` produces both the served wrapper and a downloadable copy of that same HTML source.
+
+## Workspace design
+
+The current interface adds Today’s next action and missing-information panel, desktop sidebar / phone navigation, member switching, a source-linked medication comparison, assessment section review, Data & Trust, Saved Work, and the register’s interactive time-model scenarios. It uses the same single HTML source and vanilla JavaScript. No UI library or external JS dependency was added.
+
+Additional verification:
+
+```bash
+python3 tests/test_product_redesign.py
+ENGINE=webkit python3 tests/test_product_redesign.py
+```

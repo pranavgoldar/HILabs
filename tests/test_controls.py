@@ -6,7 +6,7 @@ by test_submission_features.py. No control count is presented as pilot evidence.
 import json,os
 from playwright.sync_api import sync_playwright
 BASE=os.environ.get('BASE','http://127.0.0.1:8765')
-ROUTES=['queue','team','about']+[f'{s}-{n}' for s in ['member','outreach'] for n in ['pranav','mridul','vraj','shruti','shlok']]
+ROUTES=['queue','team','about','trust','saved']+[f'{s}-{n}' for s in ['member','outreach'] for n in ['pranav','mridul','vraj','shruti','shlok']]
 results=[];disabled=0;errors=[]
 failed_only=json.load(open(os.environ['AUDIT_FAILED_FROM']))['failed'] if os.environ.get('AUDIT_FAILED_FROM') else None
 with sync_playwright() as p:

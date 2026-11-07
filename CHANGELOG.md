@@ -48,3 +48,18 @@ The deck and both Excel workbooks are frozen. All case facts, scores, IDs and so
 ## Boundaries
 
 All calls, messages, identity decisions, cover acceptance, escalation and receipts are local simulations. Extraction uses rules. Consent masking is a UI demonstration, not server-side authorization. Reviewer and cover RN names are TBD until supplied by the person testing. Physical Android/iOS devices are not available in this workspace; Chromium and WebKit provide browser and phone-layout validation.
+
+## Reference-informed product redesign
+
+Reviewed the reference prototype’s daily handoff, member and reviewer views. The implementation uses its useful interaction ideas with our existing case data and workflow.
+
+- **Focused Today view:** the next member, one clear action, permitted contact window, and a panel of facts that still need confirmation. Shlok’s Tuesday call is visible as scheduled work. Priority remains the submitted scoring order.
+- **Navigation:** persistent desktop workspace rail; four phone destinations (Today, Member, Call & note, More). More opens Team, Data & Trust, Saved Work, and downloads.
+- **Member context:** quick member switching and a clear medication comparison for Mridul, with the original EHR-001A, EHR-001B and RX-001 source links. The existing prescriber-confirmation gate remains in force.
+- **Guided assessment:** a ten-section index, review counts, next-section navigation and explicit review checkboxes. Section review never signs or submits the assessment; editing a field invalidates that section’s review.
+- **Saved Work:** signed entries, field counts and receipt states retained per approved entry. Starting a new call does not change an earlier receipt.
+- **Data & Trust:** the four original evidence labels, all 12 datasets, 75 source records and source-specific freshness rules.
+- **Time model:** the register’s 10-, 14- and 18-minute preparation scenarios reproduce 122, 158 and 194 freed minutes, respectively. These are explicitly assumptions, separate from session measurements.
+- **Phone clarity:** reduced member-header clutter, the top issue visible early, a persistent call action, and the full workflow in a high-contrast light theme.
+
+The reference’s patient names, 28-dataset scope, clinical scenarios, pricing and alternative metrics were not imported. The submitted five members, twelve datasets, scores, facts and both Excel workbooks are unchanged.
