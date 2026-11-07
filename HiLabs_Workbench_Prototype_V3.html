@@ -1,752 +1,776 @@
-<title>HiLabs Care Workbench</title>
+<title>Care Workbench</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Clickable prototype of the HiLabs Case Management Workbench: work queue, member 360 and outreach with fictional members.">
+<meta name="description" content="Clickable concept prototype for the HiLabs APM case 2026–27: work queue, Member 360 and outreach for five fictional members.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap">
 <style>
-/* Layout: sticky navy app bar + Decide→Know→Do step tabs; content column of 1240px.
-   Queue = list + explanation pane. Member 360 = brief/evidence + actions/context. Outreach = route | assessment | note. */
+/* Layout: navy→indigo app bar (deck cover) + Decide/Know/Do tabs; 1240px column.
+   Queue = ranked list + "why" pane. Member 360 = issue → brief/evidence → actions/context. Call = steps left, live note right. */
 :root{
-  --bg:#F3F5FA;--surface:#FFFFFF;--surface-2:#F7F8FC;
-  --ink:#0B1533;--ink-2:#3A4563;--line:#D3D9E8;--line-2:#AEB8D0;
-  --navy:#0E1A4F;--navy-2:#1B2A6B;--on-navy:#FFFFFF;--on-navy-2:#C9D3F5;
-  --blue:#1D4ED8;--blue-ink:#1E3A8A;--blue-bg:#E3ECFF;
-  --violet:#5B21B6;--violet-bg:#EDE7FB;
-  --green:#166534;--green-bg:#DCFCE7;--green-line:#4ADE80;
-  --warn-ink:#78350F;--warn-bg:#FEF3C7;--warn-line:#F59E0B;
-  --risk-ink:#991B1B;--risk-bg:#FEE2E2;--risk-line:#EF4444;
-  --gray-bg:#E8EBF2;--focus:#2563EB;--shadow:0 1px 2px rgba(11,21,51,.06),0 4px 16px rgba(11,21,51,.06);
-  --font:"Plus Jakarta Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --navy:#121957;--navy-deep:#0B0F3F;--indigo:#381E8C;
+  --blue:#0053EF;--blue-ink:#0A3FB8;--blue-50:#EDF2FE;--blue-25:#F6F8FE;
+  --violet:#603CE4;--violet-50:#EFEBFD;
+  --red:#981A1A;--red-50:#FDF1F1;--red-100:#FDE1E1;--red-line:#F2A7A7;
+  --amber-50:#FDF2C6;--amber-ink:#5F3B00;--amber-line:#E7B53C;--amber-dot:#9A5B00;
+  --green-50:#DBFBE6;--green-ink:#14532D;--green-line:#7AD69C;
+  --ink:#0E1440;--ink-2:#3B4266;--line:#D6DDF3;--line-2:#AEB8DA;
+  --bg:#F6F8FE;--surface:#FFFFFF;--on-dark:#FFFFFF;--on-dark-2:#C9D1F4;
+  --display:"Plus Jakarta Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --ring:0 0 0 3px var(--surface),0 0 0 6px var(--violet);
   color-scheme:light;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 var(--font)}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--navy)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 var(--display)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:40;background:var(--navy-deep)}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
-button:disabled{cursor:not-allowed;opacity:.5}
+button:disabled{cursor:not-allowed}
 a{color:var(--blue)}
-:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
-h1,h2,h3{text-wrap:balance;margin:0}
+:focus-visible{outline:3px solid var(--violet);outline-offset:2px}
+h1,h2,h3{margin:0;text-wrap:balance}
 table{font-size:inherit}
 .wrap{max-width:1240px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.mono,.src{font-family:var(--mono);font-variant-numeric:tabular-nums}
 .tnum{font-variant-numeric:tabular-nums}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
 
-/* App bar */
-.appbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;box-shadow:0 1px 0 var(--line)}
-.bar{background:var(--navy);color:var(--on-navy)}
-.bar .wrap{display:flex;align-items:center;gap:12px 20px;flex-wrap:wrap;padding-block:10px}
-.brand{display:flex;align-items:center;gap:10px;color:var(--on-navy);text-decoration:none;font-weight:800;font-size:17px;letter-spacing:-.2px;margin-right:auto}
-.logo{display:grid;place-items:center;width:30px;height:30px;border-radius:8px;background:var(--on-navy);color:var(--navy);font-weight:800;font-size:14px}
-.who{font-size:14px;color:var(--on-navy-2)}
-.who strong{color:var(--on-navy);font-weight:700}
-.clock{font-size:13px;font-weight:700;border:1px solid var(--navy-2);background:var(--navy-2);color:var(--on-navy);padding:4px 10px;border-radius:999px}
-.steps{background:var(--surface)}
-.steps .wrap{display:flex;gap:4px;overflow-x:auto}
-.step{display:flex;align-items:center;gap:8px;padding:12px 14px 10px;border-bottom:3px solid transparent;text-decoration:none;color:var(--ink-2);font-weight:700;font-size:15px;white-space:nowrap}
-.step:hover{color:var(--ink);background:var(--surface-2)}
-.step.on{color:var(--ink);border-bottom-color:var(--blue)}
-.step small{font-size:11px;font-weight:800;letter-spacing:.8px;padding:2px 7px;border-radius:5px}
-.step .who-ctx{font-weight:600;color:var(--ink-2)}
-.t-decide{background:var(--violet-bg);color:var(--violet)}
-.t-know{background:var(--blue-bg);color:var(--blue-ink)}
-.t-do{background:var(--green-bg);color:var(--green)}
+/* ---------- App bar ---------- */
+.appbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:30}
+.bar{background:linear-gradient(100deg,var(--navy-deep) 0%,var(--navy) 55%,var(--indigo) 100%);color:var(--on-dark)}
+.bar .wrap{display:flex;align-items:center;gap:10px 18px;flex-wrap:wrap;padding-block:10px}
+.brand{display:flex;align-items:center;gap:10px;color:var(--on-dark);text-decoration:none;margin-right:auto}
+.brand b{font-weight:800;font-size:17px;letter-spacing:-.2px}
+.brand small{display:block;font-size:11px;font-weight:600;color:var(--on-dark-2);letter-spacing:.3px}
+.mark{display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:var(--blue);color:var(--on-dark);font-weight:800;font-size:13px}
+.who{font-size:14px;color:var(--on-dark-2)}
+.who strong{color:var(--on-dark)}
+.clock{font-size:13px;font-weight:700;padding:5px 11px;border-radius:999px;border:1px solid var(--on-dark-2)}
+.demo-btn{display:inline-flex;align-items:center;gap:8px;border:0;background:var(--on-dark);color:var(--navy);font-weight:800;font-size:14px;padding:7px 14px;border-radius:999px}
+.demo-btn:hover{background:var(--blue-50)}
+.demo-btn i{font-style:normal;display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--violet);color:var(--on-dark);font-size:11px}
+.tabs{background:var(--surface);border-bottom:1px solid var(--line)}
+.tabs .wrap{display:flex;gap:2px;overflow-x:auto}
+.tab{display:flex;align-items:center;gap:8px;padding:12px 14px 10px;border-bottom:3px solid transparent;text-decoration:none;color:var(--ink-2);font-weight:700;white-space:nowrap}
+.tab:hover{color:var(--ink);background:var(--blue-25)}
+.tab.on{color:var(--ink);border-bottom-color:var(--blue)}
+.tab .ctx{font-weight:600;color:var(--ink-2)}
+.tag{font-size:11px;font-weight:800;letter-spacing:.8px;padding:2px 8px;border-radius:6px;color:var(--on-dark)}
+.tag-decide{background:var(--violet)}.tag-know{background:var(--blue)}.tag-do{background:var(--navy)}
 
-/* Walkthrough strip */
-.tour{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-block:12px 0;font-size:13px;color:var(--ink-2)}
-.tour b{color:var(--ink);font-weight:700;margin-right:2px}
-.tour a{display:inline-flex;gap:6px;align-items:center;text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--line);padding:4px 10px;border-radius:999px;font-weight:600}
-.tour a:hover{border-color:var(--blue)}
-.tour a.on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
-.tour a span{font-family:var(--mono);font-size:12px;opacity:.85}
-
-main{padding-block:20px 40px}
+main{padding-block:22px 48px}
 .head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px 20px;flex-wrap:wrap;margin-bottom:18px}
-.head h1{font-size:28px;line-height:1.2;letter-spacing:-.4px}
-.head p{margin:6px 0 0;color:var(--ink-2);max-width:68ch}
-.eyebrow{font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--ink-2);margin-bottom:6px;display:flex;gap:8px;align-items:center}
+.head h1{font-size:30px;line-height:1.15;letter-spacing:-.5px}
+.head p{margin:6px 0 0;color:var(--ink-2);max-width:66ch}
+.kicker{display:flex;gap:8px;align-items:center;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--ink-2);margin-bottom:8px}
 
-/* Generic */
-.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;min-width:0}
-.card>h2,.card-h{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:16px;font-weight:800;padding:14px 16px 0}
-.card-b{padding:12px 16px 16px}
-.sub{font-size:13px;color:var(--ink-2);font-weight:500}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:9px 14px;border-radius:9px;border:1px solid var(--line-2);background:var(--surface);color:var(--ink);font-weight:700;font-size:14px;text-decoration:none;white-space:nowrap}
-.btn:hover{border-color:var(--ink-2)}
-.btn.primary{background:var(--blue);border-color:var(--blue);color:var(--on-navy)}
+/* ---------- Shared pieces ---------- */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;min-width:0}
+.ch{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px 10px;padding:13px 16px;border-radius:13px 13px 0 0;font-weight:800;font-size:16px}
+.ch.navy{background:var(--navy);color:var(--on-dark)}
+.ch.blue{background:var(--blue);color:var(--on-dark)}
+.ch.plain{border-bottom:1px solid var(--line)}
+.ch small{font-size:12px;font-weight:700;color:var(--on-dark-2)}
+.ch.blue small{color:var(--on-dark)}
+.cb{padding:14px 16px 16px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;border-radius:10px;border:1px solid var(--line-2);background:var(--surface);color:var(--ink);font-weight:700;font-size:14px;text-decoration:none;white-space:nowrap}
+.btn:hover{border-color:var(--navy);background:var(--blue-25)}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:var(--on-dark)}
 .btn.primary:hover{background:var(--blue-ink)}
-.btn.sm{padding:5px 10px;font-size:13px;border-radius:7px}
-.btnrow{display:flex;gap:8px;flex-wrap:wrap}
-.src{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line-2);background:var(--surface);color:var(--blue-ink);border-radius:6px;padding:1px 7px;font-size:12px;font-weight:600;line-height:1.6}
-.src::before{content:"↗";font-family:var(--font);font-weight:700}
-.src:hover{background:var(--blue-bg);border-color:var(--blue)}
-.st{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;border-radius:6px;padding:1px 8px;white-space:nowrap;border:1px solid transparent}
+.btn.sm{padding:6px 11px;font-size:13px;border-radius:8px}
+.btn:disabled{opacity:.45}
+.btn.primary:disabled:hover{background:var(--blue)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.hint{font-size:13px;color:var(--ink-2)}
+.src{white-space:nowrap;display:inline-flex;align-items:center;gap:3px;font-family:var(--mono);font-size:12px;font-weight:600;color:var(--blue-ink);background:var(--surface);border:1px solid var(--line-2);border-radius:6px;padding:1px 7px;line-height:1.6}
+.src::before{content:"↗";font-family:var(--display);font-weight:800}
+.src:hover{background:var(--blue-50);border-color:var(--blue)}
+.st{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:800;border-radius:6px;padding:1px 8px;white-space:nowrap;border:1px solid}
 .st b{font-size:13px}
-.st-ok{background:var(--green-bg);color:var(--green);border-color:var(--green-line)}
-.st-single{background:var(--blue-bg);color:var(--blue-ink);border-color:#9DB6F5}
-.st-conflict{background:var(--warn-bg);color:var(--warn-ink);border-color:var(--warn-line)}
-.st-unknown{background:var(--gray-bg);color:var(--ink);border-color:var(--line-2)}
+.st-ok{background:var(--green-50);color:var(--green-ink);border-color:var(--green-line)}
+.st-single{background:var(--blue-50);color:var(--blue-ink);border-color:var(--line-2)}
+.st-conflict{background:var(--amber-50);color:var(--amber-ink);border-color:var(--amber-line)}
+.st-unknown{background:var(--surface);color:var(--ink);border-color:var(--line-2);border-style:dashed}
 .fr{font-size:12px;font-weight:700;padding:1px 8px;border-radius:999px;white-space:nowrap;border:1px solid var(--line)}
-.fr-fresh{color:var(--green);background:var(--surface)}
-.fr-lag{color:var(--ink-2);background:var(--surface)}
-.fr-stale{color:var(--warn-ink);background:var(--warn-bg);border-color:var(--warn-line)}
-.fr-down,.fr-missing{color:var(--risk-ink);background:var(--risk-bg);border-color:#FCA5A5}
-.legend{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--ink-2)}
-.score{display:inline-grid;place-items:center;min-width:46px;padding:4px 8px;border-radius:8px;font-weight:800;font-size:16px;font-variant-numeric:tabular-nums}
-.sc-hi{background:var(--risk-bg);color:var(--risk-ink);border:1px solid #FCA5A5}
-.sc-md{background:var(--warn-bg);color:var(--warn-ink);border:1px solid var(--warn-line)}
-.sc-lo{background:var(--gray-bg);color:var(--ink);border:1px solid var(--line-2)}
-.avatar{display:grid;place-items:center;flex-shrink:0;width:40px;height:40px;border-radius:50%;font-weight:800;color:var(--on-navy)}
-.av-risk{background:#9F1239}.av-warn{background:#B45309}.av-gray{background:#475569}.av-blue{background:var(--blue-ink)}
-.av-lg{width:56px;height:56px;font-size:22px}
+.fr-fresh{color:var(--green-ink)}
+.fr-lag{color:var(--ink-2)}
+.fr-stale{color:var(--amber-ink);background:var(--amber-50);border-color:var(--amber-line)}
+.fr-down,.fr-missing{color:var(--red);background:var(--red-50);border-color:var(--red-line)}
+.score{display:inline-grid;place-items:center;min-width:48px;padding:4px 9px;border-radius:9px;font-weight:800;font-size:16px;font-variant-numeric:tabular-nums;border:1px solid}
+.sc-hi{background:var(--red-100);color:var(--red);border-color:var(--red-line)}
+.sc-md{background:var(--amber-50);color:var(--amber-ink);border-color:var(--amber-line)}
+.sc-lo{background:var(--blue-50);color:var(--navy);border-color:var(--line-2)}
+.av{display:grid;place-items:center;flex-shrink:0;width:40px;height:40px;border-radius:50%;font-weight:800;color:var(--on-dark)}
+.av-hi{background:var(--red)}.av-md{background:var(--amber-dot)}.av-lo{background:var(--violet)}
+.av.lg{width:56px;height:56px;font-size:22px}
+.pill{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--blue-50);color:var(--navy)}
+.spot{box-shadow:var(--ring)!important;border-radius:14px}
 
-/* Queue */
+/* ---------- Queue ---------- */
 .tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}
-.tile{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
-.tile .n{font-size:28px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums}
-.tile .l{font-size:13px;color:var(--ink-2);font-weight:600}
-.tile.hot{border:2px solid var(--risk-line)}
-.tile.hot .n{color:var(--risk-ink)}
+.tile{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 16px}
+.tile .n{flex-shrink:0;display:grid;place-items:center;min-width:48px;height:48px;padding:0 8px;border-radius:999px;font-size:20px;font-weight:800;color:var(--on-dark);background:var(--blue);font-variant-numeric:tabular-nums}
+.tile .l{font-size:14px;font-weight:600;line-height:1.3}
+.tile.hot{background:var(--red-50);border-color:var(--red-line)}
+.tile.hot .n{background:var(--red)}
+.tile.v .n{background:var(--violet)}
+.tile.k .n{background:var(--navy)}
 .qgrid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:16px;align-items:start}
-.tools{display:flex;gap:10px 12px;flex-wrap:wrap;align-items:center;justify-content:space-between;padding:14px 16px 12px}
+.tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;padding:14px 16px}
 .chips{display:flex;gap:6px;flex-wrap:wrap}
-.chip{border:1px solid var(--line-2);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13px;font-weight:700}
-.chip span{margin-left:5px;font-variant-numeric:tabular-nums;opacity:.8}
-.chip.on{background:var(--ink);border-color:var(--ink);color:var(--surface)}
-.search{display:flex;align-items:center;gap:6px;border:1px solid var(--line-2);border-radius:9px;padding:6px 10px;background:var(--surface);min-width:0;flex:0 1 220px}
-.search input{border:0;outline:0;background:transparent;width:100%;font-size:14px;min-width:0}
+.chip{border:1px solid var(--line-2);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:700}
+.chip:hover{border-color:var(--navy)}
+.chip span{margin-left:5px;font-variant-numeric:tabular-nums}
+.chip.on{background:var(--navy);border-color:var(--navy);color:var(--on-dark)}
+.search{display:flex;align-items:center;gap:6px;border:1px solid var(--line-2);border-radius:10px;padding:7px 10px;background:var(--surface);flex:0 1 230px;min-width:0}
+.search input{border:0;outline:0;background:transparent;width:100%;min-width:0;font-size:14px}
 .search input::placeholder{color:var(--ink-2)}
-.qhead,.qrow{display:grid;grid-template-columns:62px minmax(0,1fr) minmax(0,1.5fr) 92px;gap:12px;align-items:center;padding:10px 16px}
-.qhead{font-size:12px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--ink-2);background:var(--surface-2);border-block:1px solid var(--line)}
+.qhead,.qrow{display:grid;grid-template-columns:64px minmax(0,1fr) minmax(0,1.5fr) 96px;gap:12px;align-items:center;padding:11px 16px}
+.qhead{font-size:12px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--on-dark);background:var(--navy)}
 .qrow{width:100%;text-align:left;border:0;border-bottom:1px solid var(--line);background:var(--surface);border-left:4px solid transparent;padding-left:12px}
-.qrow:last-child{border-bottom:0;border-radius:0 0 12px 12px}
-.qrow:hover{background:var(--surface-2)}
-.qrow[aria-pressed="true"]{background:var(--blue-bg);border-left-color:var(--blue)}
-.qname{display:flex;align-items:center;gap:10px;min-width:0}
-.qname strong{display:block;font-size:16px}
-.qname small{display:block;font-size:13px;color:var(--ink-2)}
-.qwhy{font-size:14px;font-weight:600}
-.qwhy.warn{color:var(--warn-ink)}
-.qwhy small{display:block;font-weight:500;color:var(--ink-2);font-size:13px}
-.qdue{text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
-.qdue small{display:block;font-weight:600;font-size:12px;color:var(--ink-2)}
+.qrow:last-child{border-bottom:0;border-radius:0 0 14px 14px}
+.qrow:hover{background:var(--blue-25)}
+.qrow[aria-pressed="true"]{background:var(--blue-50);border-left-color:var(--blue)}
+.qn{display:flex;align-items:center;gap:10px;min-width:0}
+.qn strong{display:block;font-size:16px}
+.qn small,.qw small{display:block;font-size:13px;color:var(--ink-2);font-weight:500}
+.qw{font-size:14px;font-weight:700}
+.qw.warn{color:var(--amber-ink)}
+.qd{text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+.qd small{display:block;font-size:12px;font-weight:600;color:var(--ink-2)}
 .empty{padding:28px 16px;text-align:center;color:var(--ink-2)}
-.pane{position:sticky;top:calc(env(safe-area-inset-top,0px) + 118px)}
-.pane-top{display:flex;gap:12px;align-items:center;padding:16px 16px 4px}
-.pane-top h2{font-size:20px}
-.bars{display:grid;gap:8px;margin:6px 0 10px}
-.barl{display:grid;grid-template-columns:112px minmax(0,1fr) 54px;gap:10px;align-items:center;font-size:13px}
-.barl .tr{height:10px;border-radius:5px;background:var(--gray-bg);overflow:hidden}
-.barl .fi{height:100%;background:var(--violet);border-radius:5px}
-.barl b{text-align:right;font-variant-numeric:tabular-nums}
-.barl span{font-weight:700}
-.why-list{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:13px;color:var(--ink-2)}
-.why-list b{color:var(--ink)}
-.note-box{font-size:13px;background:var(--violet-bg);color:var(--violet);border-radius:8px;padding:8px 10px;font-weight:600;margin-top:10px}
-.sec-t{font-size:12px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--ink-2);margin:16px 0 8px}
+.pane{position:sticky;top:calc(env(safe-area-inset-top,0px) + 124px)}
+.ptop{display:flex;gap:12px;align-items:center}
+.ptop h2{font-size:20px}
+.ptop .sub{font-size:13px;color:var(--on-dark-2)}
+.sect{font-size:12px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--ink-2);margin:16px 0 8px}
+.bars{display:grid;gap:8px}
+.bl{display:grid;grid-template-columns:96px minmax(0,1fr) 56px;gap:10px;align-items:center;font-size:13px;font-weight:700}
+.bl .tr{height:10px;border-radius:5px;background:var(--blue-50);overflow:hidden}
+.bl .fi{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--blue),var(--violet))}
+.bl b{text-align:right;font-variant-numeric:tabular-nums}
+.why{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:5px;font-size:13px;color:var(--ink-2)}
+.why b{color:var(--ink)}
+.tie{margin-top:10px;font-size:13px;font-weight:700;color:var(--violet);background:var(--violet-50);border-radius:9px;padding:8px 10px}
 .acts{display:grid;gap:8px}
-.act{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface)}
-.act-t{font-weight:700;font-size:14px}
+.act{border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.act-t{display:block;font-weight:700;font-size:14px}
 .act-d{font-size:13px;color:var(--ink-2)}
-.act .btnrow{margin-top:8px}
-.act.accepted{border-color:var(--green-line);background:var(--green-bg)}
-.act.dismissed{background:var(--surface-2)}
-.act.dismissed .act-t{text-decoration:line-through;color:var(--ink-2)}
+.act .row{margin-top:8px}
+.act.ok{background:var(--green-50);border-color:var(--green-line)}
+.act.no{background:var(--blue-25)}
+.act.no .act-t{text-decoration:line-through;color:var(--ink-2)}
 .act-s{font-size:13px;font-weight:700;margin-top:6px}
-.act.accepted .act-s{color:var(--green)}
-.act input{width:100%;border:1px solid var(--line-2);border-radius:8px;padding:6px 9px;font-size:14px;margin-top:6px}
-.reasons{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.act.ok .act-s{color:var(--green-ink)}
+.act input{width:100%;margin-top:6px;border:1px solid var(--line-2);border-radius:8px;padding:7px 9px;font-size:14px}
 
-/* Member 360 */
-.back{display:inline-flex;gap:6px;font-weight:700;font-size:14px;text-decoration:none;margin-bottom:12px}
+/* ---------- Member 360 ---------- */
+.back{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:14px;text-decoration:none;margin-bottom:12px}
 .mhead{display:flex;justify-content:space-between;align-items:center;gap:14px 20px;flex-wrap:wrap;padding:16px}
 .mid{display:flex;gap:14px;align-items:center;min-width:0}
 .mid h1{font-size:26px;letter-spacing:-.3px}
 .mid p{margin:2px 0 0;color:var(--ink-2);font-size:14px}
 .mmeta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
-.pill{font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--gray-bg);color:var(--ink)}
-.banner{display:flex;gap:12px;align-items:flex-start;border-radius:12px;padding:14px 16px;margin:14px 0;border:1px solid;border-left-width:6px}
-.banner.warn{background:var(--warn-bg);border-color:var(--warn-line);color:var(--warn-ink)}
-.banner.risk{background:var(--risk-bg);border-color:var(--risk-line);color:var(--risk-ink)}
-.banner .ic{font-size:22px;line-height:1;font-weight:800}
+.explain{margin:12px 0 0;display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:14px;color:var(--ink-2)}
+.explain strong{color:var(--ink)}
+.explain button{border:1px solid var(--line-2);background:var(--surface);border-radius:999px;padding:3px 11px;font-size:13px;font-weight:700;color:var(--blue-ink)}
+.explain-box{flex-basis:100%;background:var(--blue-50);border:1px solid var(--line-2);border-radius:12px;padding:12px 14px;color:var(--ink)}
+.explain-box ul{margin:6px 0 0;padding-left:18px}
+.banner{display:flex;gap:12px;align-items:flex-start;border-radius:14px;padding:14px 16px;margin:14px 0;border:1px solid}
+.banner.warn{background:var(--amber-50);border-color:var(--amber-line)}
+.banner.risk{background:var(--red-50);border-color:var(--red-line)}
+.banner .ic{display:grid;place-items:center;flex-shrink:0;width:30px;height:30px;border-radius:50%;font-weight:800;color:var(--on-dark)}
+.banner.warn .ic{background:var(--amber-dot)}.banner.risk .ic{background:var(--red)}
 .banner h2{font-size:17px;margin-bottom:4px}
-.banner p{margin:0 0 8px;color:var(--ink)}
-.banner .never{font-size:13px;font-weight:700;color:var(--ink)}
+.banner.risk h2{color:var(--red)}.banner.warn h2{color:var(--amber-ink)}
+.banner p{margin:0 0 8px}
+.never{font-size:13px;font-weight:700;margin-top:8px}
 .mgrid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px;align-items:start}
 .col{display:grid;gap:16px;min-width:0}
-.brief{list-style:none;margin:0;padding:0;display:grid;gap:10px}
-.brief li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;align-items:start}
-.brief .num{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--blue-bg);color:var(--blue-ink);font-size:12px;font-weight:800}
-.brief .meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
-.ai-tag{font-size:11px;font-weight:800;letter-spacing:.6px;color:var(--blue-ink);background:var(--blue-bg);padding:2px 8px;border-radius:5px}
-.paused{font-size:14px;background:var(--gray-bg);border-radius:8px;padding:10px 12px}
+.brief{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.brief li{display:grid;grid-template-columns:24px minmax(0,1fr);gap:10px}
+.num{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--blue);color:var(--on-dark);font-size:12px;font-weight:800}
+.meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}
+.paused{background:var(--blue-50);border-radius:10px;padding:10px 12px;font-size:14px}
+.seg{display:inline-flex;background:var(--blue-50);border-radius:10px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;border-radius:8px;padding:6px 12px;font-weight:700;font-size:13px;color:var(--navy)}
+.seg button[aria-pressed="true"]{background:var(--surface);box-shadow:0 1px 3px rgba(18,25,87,.18)}
+.legend{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--ink-2)}
 .tscroll{overflow-x:auto}
-.ev{width:100%;border-collapse:collapse;min-width:560px}
-.ev th{font-size:12px;letter-spacing:.6px;text-transform:uppercase;color:var(--ink-2);text-align:left;padding:8px 10px;background:var(--surface-2);border-block:1px solid var(--line)}
-.ev td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top;font-size:14px}
+.ev{width:100%;border-collapse:collapse;min-width:580px}
+.ev th{font-size:12px;letter-spacing:.6px;text-transform:uppercase;color:var(--ink-2);text-align:left;padding:8px 12px;background:var(--blue-25);border-block:1px solid var(--line)}
+.ev td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top;font-size:14px}
 .ev tr:last-child td{border-bottom:0}
 .ev td:first-child{font-weight:700;white-space:nowrap}
-.ev .asof{font-size:13px;color:var(--ink-2);white-space:nowrap}
-.checks{list-style:none;margin:0;padding:0;display:grid;gap:8px}
-.checks li{display:flex;gap:10px;align-items:flex-start;font-size:14px}
-.checks .n{display:grid;place-items:center;flex-shrink:0;width:24px;height:24px;border-radius:50%;background:var(--green);color:var(--on-navy);font-size:12px;font-weight:800}
-.kv{font-size:14px;display:grid;gap:3px}
-.kv .w{font-size:13px;font-weight:700;color:var(--warn-ink);background:var(--warn-bg);border-radius:6px;padding:4px 8px;margin-top:6px}
+.ev .ao{display:block;font-size:12px;color:var(--ink-2);margin-top:3px;white-space:nowrap}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.steps li{display:flex;gap:10px;align-items:flex-start;font-size:14px}
+.steps .num{background:var(--navy);flex-shrink:0}
+.kv{display:grid;gap:3px;font-size:14px}
+.warnline{font-size:13px;font-weight:700;color:var(--amber-ink);background:var(--amber-50);border-radius:8px;padding:5px 9px;margin-top:8px}
 .tl{list-style:none;margin:0;padding:0 0 0 4px}
 .tl li{position:relative;padding:0 0 14px 22px;border-left:2px solid var(--line)}
 .tl li:last-child{padding-bottom:0}
-.tl li::before{content:"";position:absolute;left:-7px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--blue);border:2px solid var(--surface)}
+.tl li::before{content:"";position:absolute;left:-7px;top:5px;width:12px;height:12px;border-radius:50%;background:var(--blue);border:2px solid var(--surface)}
 .tl h3{font-size:14px}
-.tl p{margin:2px 0 4px;font-size:13px;color:var(--ink-2)}
-.dup{font-size:12px;font-weight:700;background:var(--gray-bg);border-radius:5px;padding:1px 7px;margin-left:6px}
+.tl p{margin:2px 0 5px;font-size:13px;color:var(--ink-2)}
 
-/* Outreach */
-.ogrid{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.1fr) minmax(0,1.15fr);gap:16px;align-items:start}
+/* ---------- Call screen ---------- */
+.ogrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;align-items:start}
+.note-col{position:sticky;top:calc(env(safe-area-inset-top,0px) + 124px)}
 .routes{display:grid;gap:8px}
-.route{display:grid;grid-template-columns:20px minmax(0,1fr);gap:8px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;background:var(--surface)}
-.route input{margin:3px 0 0;accent-color:var(--blue);width:16px;height:16px}
-.route.sel{border-color:var(--blue);background:var(--blue-bg)}
-.route.blocked{background:var(--risk-bg);border-color:#FCA5A5;cursor:not-allowed}
+.route{display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer}
+.route input{width:17px;height:17px;margin:3px 0 0;accent-color:var(--blue)}
+.route.sel{border-color:var(--blue);background:var(--blue-50)}
+.route.blocked{cursor:not-allowed;background:var(--red-50);border-color:var(--red-line)}
 .route strong{display:block;font-size:14px}
-.route .num{font-family:var(--mono);font-size:15px;font-weight:600}
+.route .ph{font-family:var(--mono);font-size:15px;font-weight:600}
 .route small{display:block;font-size:13px;color:var(--ink-2)}
-.route.blocked small{color:var(--risk-ink);font-weight:700}
-.script{font-size:14px;background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--ink-2);border-radius:8px;padding:10px 12px;margin-top:10px}
-.field{display:grid;gap:5px;margin-top:12px}
-.field label,.flabel{font-size:13px;font-weight:800}
-.field select,.field textarea,.field input{width:100%;border:1px solid var(--line-2);border-radius:8px;padding:8px 10px;background:var(--surface);font-size:14px}
-.field textarea{min-height:70px;resize:vertical}
-.hint{font-size:13px;color:var(--ink-2)}
-.counter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
-.pf{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
-.pf:last-child{border-bottom:0}
-.pf .lab{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-2)}
-.pf .val{font-size:14px;font-weight:600}
-.pf .meta{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.cfm{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;white-space:nowrap}
-.cfm input{width:16px;height:16px;accent-color:var(--green)}
-.unc{font-size:11px;font-weight:800;color:var(--warn-ink);background:var(--warn-bg);border-radius:5px;padding:1px 6px}
-.okc{font-size:11px;font-weight:800;color:var(--green);background:var(--green-bg);border-radius:5px;padding:1px 6px}
-.draft{white-space:pre-wrap;font-size:14px;line-height:1.6;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;max-height:420px;overflow:auto}
-.draft-ta{width:100%;min-height:300px;border:1px solid var(--line-2);border-radius:10px;padding:12px;font-size:14px;line-height:1.6}
-.review{border:2px solid var(--blue);border-radius:10px;padding:12px;margin-top:12px;background:var(--blue-bg)}
-.review label{display:flex;gap:8px;align-items:flex-start;font-size:14px;font-weight:600}
+.route.blocked small{color:var(--red);font-weight:700}
+.script{margin-top:10px;background:var(--blue-25);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px}
+.outs{display:flex;flex-wrap:wrap;gap:6px}
+.outs button{border:1px solid var(--line-2);background:var(--surface);border-radius:10px;padding:8px 12px;font-size:14px;font-weight:700}
+.outs button:hover{border-color:var(--navy)}
+.outs button[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:var(--on-dark)}
+.pf{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
+.pf .lab{font-size:12px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--ink-2)}
+.pf .val{font-weight:600;font-size:14px}
+.cf{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;white-space:nowrap}
+.cf input{width:17px;height:17px;accent-color:var(--green-ink)}
+.u{font-size:11px;font-weight:800;padding:1px 6px;border-radius:5px;color:var(--amber-ink);background:var(--amber-50)}
+.c{font-size:11px;font-weight:800;padding:1px 6px;border-radius:5px;color:var(--green-ink);background:var(--green-50)}
+.field{display:grid;gap:5px;margin-top:10px}
+.field label{font-size:13px;font-weight:800}
+.field input,.field textarea{width:100%;border:1px solid var(--line-2);border-radius:9px;padding:8px 10px;font-size:14px;background:var(--surface)}
+.field textarea{min-height:68px;resize:vertical}
+.field input:disabled,.field textarea:disabled{background:var(--blue-25)}
+.field input::placeholder,.field textarea::placeholder{color:var(--ink-2)}
+.draft{white-space:pre-wrap;font-size:14px;line-height:1.6;background:var(--blue-25);border:1px solid var(--line);border-radius:12px;padding:12px 14px;max-height:430px;overflow:auto}
+.draft-ta{width:100%;min-height:280px;border:1px solid var(--line-2);border-radius:12px;padding:12px;font-size:14px;line-height:1.6}
+.review{margin-top:12px;border:2px solid var(--blue);border-radius:12px;padding:12px;background:var(--blue-50)}
+.review label{display:flex;gap:8px;align-items:flex-start;font-weight:600;font-size:14px}
 .review input{width:18px;height:18px;margin-top:2px;accent-color:var(--blue)}
 .writes{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:6px}
-.writes li{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:6px 10px;border-radius:8px;background:var(--green-bg);color:var(--green);font-weight:700}
-.writes li.pending{background:var(--warn-bg);color:var(--warn-ink)}
-.writes li.partial{background:var(--warn-bg);color:var(--warn-ink)}
+.writes li{display:flex;justify-content:space-between;gap:10px;padding:6px 10px;border-radius:9px;font-size:14px;font-weight:700;background:var(--green-50);color:var(--green-ink)}
+.writes li.p{background:var(--amber-50);color:var(--amber-ink)}
 .flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:16px;font-size:13px;font-weight:700}
-.flow span{border:1px solid var(--line-2);border-radius:8px;padding:4px 9px;background:var(--surface)}
+.flow span{border:1px solid var(--line-2);background:var(--surface);border-radius:8px;padding:4px 9px}
 .flow i{font-style:normal;color:var(--ink-2)}
 
-/* Footer, dialog, toast */
+/* ---------- Footer, dialog, tour, toast ---------- */
 footer{border-top:1px solid var(--line);background:var(--surface)}
-footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px 20px;flex-wrap:wrap;padding-block:14px;font-size:13px;color:var(--ink-2)}
-.toggles{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px 20px;flex-wrap:wrap;padding-block:14px 96px;font-size:13px;color:var(--ink-2)}
+.toggles{display:flex;gap:14px;flex-wrap:wrap;align-items:center;border-radius:12px;padding:4px}
 .toggles label{display:flex;gap:6px;align-items:center;font-weight:700;color:var(--ink)}
-.toggles input{width:16px;height:16px;accent-color:var(--blue)}
-dialog{border:0;border-radius:14px;padding:0;width:min(560px,calc(100vw - 32px));max-height:85vh;color:var(--ink);background:var(--surface);box-shadow:0 24px 64px rgba(11,21,51,.35)}
-dialog::backdrop{background:rgba(11,21,51,.55)}
-.dh{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;padding:16px 18px;border-bottom:1px solid var(--line)}
-.dh h2{font-size:18px}
-.dh p{margin:2px 0 0;font-size:13px;color:var(--ink-2)}
+.toggles input{width:17px;height:17px;accent-color:var(--blue)}
+dialog{border:0;border-radius:16px;padding:0;width:min(560px,calc(100vw - 32px));max-height:85vh;color:var(--ink);background:var(--surface);box-shadow:0 24px 64px rgba(11,15,63,.4)}
+dialog::backdrop{background:rgba(11,15,63,.55)}
+.dh{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:16px 18px;background:var(--navy);color:var(--on-dark)}
+.dh h2{font-family:var(--mono);font-size:18px}
+.dh p{margin:2px 0 0;font-size:13px;color:var(--on-dark-2)}
+.x{border:1px solid var(--on-dark-2);background:transparent;color:var(--on-dark);border-radius:8px;width:34px;height:34px;font-size:18px;line-height:1}
 .db{padding:14px 18px 18px;overflow:auto}
-.rf{display:grid;grid-template-columns:minmax(0,150px) minmax(0,1fr);gap:4px 12px;margin:0}
-.rf dt{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--ink-2);padding:6px 0;border-bottom:1px solid var(--line)}
-.rf dd{margin:0;font-size:14px;padding:6px 0;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
-.x{border:1px solid var(--line-2);background:var(--surface);border-radius:8px;width:34px;height:34px;font-size:18px;line-height:1}
-#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);max-width:calc(100vw - 32px);background:var(--ink);color:var(--surface);padding:10px 16px;border-radius:10px;font-weight:600;font-size:14px;opacity:0;pointer-events:none;transition:.2s;z-index:50}
+.rf{display:grid;grid-template-columns:minmax(0,150px) minmax(0,1fr);margin:0}
+.rf dt,.rf dd{padding:7px 0;border-bottom:1px solid var(--line);margin:0}
+.rf dt{font-size:12px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--ink-2)}
+.rf dd{font-size:14px;overflow-wrap:anywhere}
+.tour{position:fixed;z-index:35;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));width:min(380px,calc(100vw - 32px));background:var(--navy);color:var(--on-dark);border-radius:16px;padding:14px 16px;box-shadow:0 18px 50px rgba(11,15,63,.45)}
+.tour .tt{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--on-dark-2)}
+.tour h3{font-size:17px;margin:6px 0 4px}
+.tour p{margin:0;font-size:14px;color:var(--on-dark-2)}
+.tour .row{margin-top:12px;justify-content:space-between}
+.tour .btn{border-color:var(--on-dark-2);background:transparent;color:var(--on-dark)}
+.tour .btn:hover{background:var(--navy-deep)}
+.tour .btn.primary{background:var(--blue);border-color:var(--blue)}
+.tour .dots{display:flex;gap:4px}
+.tour .dots i{width:7px;height:7px;border-radius:50%;background:var(--indigo)}
+.tour .dots i.on{background:var(--on-dark)}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);max-width:calc(100vw - 32px);background:var(--ink);color:var(--on-dark);padding:10px 16px;border-radius:12px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:.2s;z-index:50}
 #toast.show{opacity:1;transform:translate(-50%,0)}
 
-@media (max-width:1060px){
-  .ogrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
-  .ogrid>.card:last-child{grid-column:1/-1}
-}
-@media (max-width:900px){
-  .qgrid,.mgrid{grid-template-columns:minmax(0,1fr)}
-  .pane{position:static}
+@media (max-width:980px){
+  .qgrid,.mgrid,.ogrid{grid-template-columns:minmax(0,1fr)}
+  .pane,.note-col{position:static}
   .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (max-width:640px){
-  .head h1{font-size:23px}
   .appbar{position:static}
-  .who{display:none}
+  .who,.clock{display:none}
+  .head h1{font-size:24px}
   .qhead{display:none}
-  .qrow{grid-template-columns:54px minmax(0,1fr) auto;grid-template-areas:"s n d" "s w w"}
-  .qrow .score{grid-area:s;align-self:start}
-  .qrow .qname{grid-area:n}.qrow .qwhy{grid-area:w}.qrow .qdue{grid-area:d}
-  .qname .avatar{display:none}
-  .ogrid{grid-template-columns:minmax(0,1fr)}
-  .ogrid>.card:last-child{grid-column:auto}
-  .barl{grid-template-columns:90px minmax(0,1fr) 48px}
+  .qrow{grid-template-columns:56px minmax(0,1fr) auto;grid-template-areas:"s n d" "s w w"}
+  .qrow .score{grid-area:s;align-self:start}.qrow .qn{grid-area:n}.qrow .qw{grid-area:w}.qrow .qd{grid-area:d}
+  .qn .av{display:none}
+  .search{flex:1 1 100%}
+  .bl{grid-template-columns:84px minmax(0,1fr) 50px}
   .rf{grid-template-columns:minmax(0,1fr)}
   .rf dt{border-bottom:0;padding-bottom:0}
   .mid h1{font-size:22px}
-  .search{flex:1 1 100%}
+  .tile .n{min-width:40px;height:40px;font-size:17px}
 }
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
 
 <div class="appbar">
   <div class="bar"><div class="wrap">
-    <a class="brand" href="#queue"><span class="logo" aria-hidden="true">Hi</span>HiLabs Care Workbench</a>
-    <span class="who"><strong>Maria, RN</strong> · 48 active cases · transitions of care</span>
-    <span class="clock tnum">Mon 2 Nov 2026 · 08:00 ET</span>
+    <a class="brand" href="#queue"><span class="mark" aria-hidden="true">CW</span><span><b>Care Workbench</b><small>HiLabs APM case 2026–27 · concept prototype</small></span></a>
+    <span class="who"><strong>Maria, RN</strong> · 48 active cases</span>
+    <span class="clock tnum">Mon 2 Nov · 08:00 ET</span>
+    <button type="button" class="demo-btn" data-act="tour"><i aria-hidden="true">▶</i>Guided demo</button>
   </div></div>
-  <nav class="steps" aria-label="Workbench screens"><div class="wrap" id="steps"></div></nav>
+  <nav class="tabs" aria-label="Screens"><div class="wrap" id="tabs"></div></nav>
 </div>
 
-<div class="wrap"><div class="tour" id="tour"></div></div>
 <main class="wrap" id="app"></main>
 
 <footer><div class="wrap">
-  <span>Fictional members and records only. Nothing here places calls, sends messages or writes to a real system.</span>
-  <div class="toggles">
+  <span>All members and records are fictional. Nothing here calls anyone or writes to a real system.</span>
+  <div class="toggles" id="toggles">
     <label for="t-ai"><input type="checkbox" id="t-ai"> Pause AI assist</label>
     <label for="t-pbm"><input type="checkbox" id="t-pbm"> Pharmacy feed down</label>
-    <button class="btn sm" id="reset" type="button">Reset demo</button>
+    <button type="button" class="btn sm" data-act="reset">Reset demo</button>
   </div>
 </div></footer>
 
+<div class="tour" id="tour" hidden></div>
 <dialog id="dlg" aria-labelledby="dlg-t"></dialog>
 <div id="toast" role="status" aria-live="polite"></div>
 
 <script>
 (function(){
 'use strict';
-/* ---------------- Data (all fictional) ---------------- */
+/* ================= Data: every fact mirrors the Synthetic Data Annex ================= */
 const ORDER=['pranav','mmridul','vraj','shruti','shlok'];
 const P={
- pranav:{key:'pranav',id:'SYN-004',name:'Pranav',age:36,plan:'Medicaid',cond:'Behavioral-health discharge',av:'risk',
-  score:{u:40,d:30,b:20,n:10},
-  scoreWhy:{u:'Behavioral-health discharge; safety not checked since.',d:'Follow-up window closes Sat 7 Nov; work slot 09:00 today.',b:'Shared phone and housing loss.',n:'New discharge awaiting the first RN review.'},
-  tie:'Tied at 100 with Mmridul. The behavioral-health safety rule puts Pranav first.',
-  due:'09:00',dueToday:true,dueLabel:'Today',why:'BH discharge 31 Oct; no day-7 visit booked',whySub:'Shared phone · housing lost',tags:['barriers'],
-  banner:{tone:'risk',icon:'!',title:'Behavioral-health discharge: the 7-day follow-up window closes Sat 7 Nov',text:'Discharged Sat 31 Oct. No follow-up visit is booked and his safety has not been checked since. The phone on file is shared, so the first message must be a neutral callback request.',src:['ADT-004','BH-004','OUT-004']},
-  brief:[{t:'Discharged from a behavioral-health unit on Sat 31 Oct; no follow-up visit booked yet.',src:'ADT-004',st:'single'},{t:'Discharge summary says he lost his housing in October and is staying with a friend.',src:'CCD-004',st:'single'},{t:'The phone on file is shared with a roommate; he asked for callback requests only.',src:'OUT-004',st:'ok'}],
-  steps:['Leave a neutral callback request with no clinical details','Do a private safety check when he calls back','Book the BH follow-up visit before Sat 7 Nov','Start a housing referral'],
-  actions:[{t:'Leave a neutral callback request',d:'Shared phone · no clinical details'},{t:'Book BH follow-up before Sat 7 Nov',d:'Lakeside BH Clinic · 216-555-0144'},{t:'Start a housing referral',d:'Housing lost in October'}],
-  evidence:[
-   {d:'Discharge',f:'Sat 31 Oct, 11:00 · Lakeside Behavioral Health Unit',st:'single',src:['ADT-004'],fr:'fresh',asof:'31 Oct'},
-   {d:'BH follow-up',f:'None booked · due by Sat 7 Nov',st:'single',src:['BH-004'],fr:'fresh',asof:'1 Nov'},
-   {d:'Current safety',f:'Not assessed since discharge',st:'unknown',src:[],fr:'missing',asof:'—'},
-   {d:'Housing',f:'Discharge summary: housing lost. Social screen: stable.',st:'conflict',src:['CCD-004','SOC-004'],fr:'stale',asof:'Screen 12 Mar'},
-   {d:'Phone',f:'216-555-0104 · shared with roommate',st:'ok',src:['OUT-004','MEM-004'],fr:'fresh',asof:'31 Oct'},
-   {d:'Discharge medicines',f:'Not included in the summary',st:'unknown',src:['CCD-004'],fr:'missing',asof:'—'}],
-  cards:[
-   {h:'Contact & privacy',lines:['<strong>Shared phone · 216-555-0104</strong>','Callback requests only','English · best time unknown'],src:'OUT-004',w:'Never leave clinical details on this number.'},
-   {h:'Care team',lines:['<strong>Lakeside BH Clinic</strong>','216-555-0144','No appointment booked'],src:'ACC-004'},
-   {h:'Social needs',lines:['Housing lost in October','Food and transport not asked'],src:'SOC-004',w:'Social screen is 8 months old. Re-ask on the call.'}],
-  timeline:[{at:'1 Nov 09:00',t:'Follow-up gap flagged',p:'No BH visit booked within 7 days of discharge.',src:'BH-004'},{at:'31 Oct 11:00',t:'Discharged · behavioral-health unit',p:'Disposition: home, address not confirmed.',src:'ADT-004'},{at:'31 Oct 15:20',t:'Outreach · phone answered by roommate',p:'Member asked for callback requests only.',src:'OUT-004'},{at:'12 Mar',t:'Social-needs screen',p:'Housing reported as stable (now outdated).',src:'SOC-004'}],
-  routes:[{l:'Member · shared phone',num:'216-555-0104',s:'gated',note:'Neutral callback request only'},{l:'Private callback',num:'Maria · 216-555-0190',s:'ok',note:'Clinical questions once he confirms he can talk privately'},{l:'BH clinic team',num:'216-555-0144',s:'ok',note:'Book the follow-up visit'}],
-  script:'“Hi, this is Maria from your health plan. Please ask Pranav to call Maria back at 216-555-0190. Thank you.”',
-  prefill:[{l:'Identity & plan',v:'Pranav, 36 · Medicaid · SYN-004',src:'MEM-004'},{l:'Discharge',v:'31 Oct · behavioral-health unit',src:'ADT-004'},{l:'Consent scope',v:'Care coordination, signed 31 Oct',src:'MEM-004'},{l:'Living situation',v:'Staying with a friend',src:'CCD-004'},{l:'Preferred contact',v:'Callback requests on a shared phone',src:'OUT-004'}],
-  ask:[{l:'Safe right now?',ph:'Ask privately. Follow the plan’s escalation procedure if not.'},{l:'Medicines in hand',ph:'Names and doses he has'},{l:'Follow-up visit',ph:'Date booked with the clinic'},{l:'Member’s goal',ph:'In his own words'}]},
- mmridul:{key:'mmridul',id:'SYN-001',name:'Mmridul',age:72,plan:'Medicare Advantage PPO',cond:'Heart failure',av:'risk',
-  score:{u:40,d:30,b:20,n:10},
-  scoreWhy:{u:'Heart-failure discharge with an unexplained diuretic dose change.',d:'Inside the 2-business-day contact window; work slot 10:00.',b:'Dose conflict and transport need.',n:'New discharge awaiting the first RN review.'},
-  tie:'Tied at 100 with Pranav, who goes first under the behavioral-health safety rule.',
-  due:'10:00',dueToday:true,dueLabel:'Today',why:'⚠ 40 vs 20 mg furosemide; no new fill',whySub:'Discharged Fri 30 Oct',warn:true,tags:['meds'],
-  banner:{tone:'warn',icon:'⚠',title:'Dose conflict · furosemide',text:'The discharge summary says <b>40 mg daily</b> (EHR-001B, 30 Oct). The PCP list says <b>20 mg daily</b> (EHR-001A, 1 Oct). The only fill on record is the old 20 mg (RX-001, 1 Oct), and that supply ran out on 30 Oct.',textDown:'The discharge summary says <b>40 mg daily</b> (EHR-001B, 30 Oct). The PCP list says <b>20 mg daily</b> (EHR-001A, 1 Oct). The pharmacy feed is down, so fill status is <b>unknown</b>, not “not filled”.',src:['EHR-001B','EHR-001A','RX-001'],never:'The workbench never picks a dose. Maria and the prescriber decide.'},
-  brief:[{t:'Home Fri 30 Oct after a heart-failure stay; the discharge summary says furosemide 40 mg daily.',src:'EHR-001B',st:'single'},{t:'The only fill on record is the old 20 mg from 1 Oct; that supply ended 30 Oct.',src:'RX-001',st:'single',pbm:true,tDown:'Pharmacy feed is down since 06:00, so fill status is unknown.'},{t:'PCP visit Thu 5 Nov at 10:00 with Dr. Rowan Ash; he needs transport.',src:'ACC-001',st:'single'}],
-  steps:['Call by 10:00: pills in hand, weight, breathing and swelling','Ask the prescriber to confirm the intended dose','Book transport for the 5 Nov PCP visit'],
-  actions:[{t:'Call by 10:00: pills in hand, weight, symptoms',d:'216-555-0101 · verified 30 Oct'},{t:'Ask the prescriber to confirm the dose',d:'Show both sources: EHR-001A and EHR-001B'},{t:'Book transport for Thu 5 Nov',d:'Dr. Rowan Ash · 10:00'}],
-  evidence:[
-   {d:'Discharge',f:'Fri 30 Oct, 14:00 · Harbor Hospital · 2 messages merged',st:'single',src:['ADT-001A','ADT-001B'],fr:'fresh',asof:'30 Oct'},
-   {d:'Discharge medicines',f:'Furosemide 40 mg daily',st:'conflict',src:['EHR-001B'],fr:'fresh',asof:'30 Oct'},
-   {d:'PCP medicine list',f:'Furosemide 20 mg daily',st:'conflict',src:['EHR-001A'],fr:'lag',asof:'1 Oct'},
-   {d:'Pharmacy fill',f:'20 mg · 30-day supply · ended 30 Oct',st:'single',src:['RX-001'],fr:'fresh',asof:'1 Oct fill',pbm:true},
-   {d:'Potassium',f:'4.2 mmol/L',st:'single',src:['LAB-001A'],fr:'fresh',asof:'30 Oct'},
-   {d:'Creatinine',f:'1.1 mg/dL',st:'single',src:['LAB-001B'],fr:'fresh',asof:'30 Oct'},
-   {d:'Daily weight',f:'Not received · ask on the call',st:'unknown',src:[],fr:'missing',asof:'—'},
-   {d:'Last claim',f:'Office visit for heart failure, 15 Sep',st:'single',src:['CLM-001'],fr:'lag',asof:'45-day lag is normal'}],
-  cards:[
-   {h:'Contact',lines:['<strong>216-555-0101 · member’s own phone</strong>','Verified at the bedside, 30 Oct','English · 09:00–11:00'],src:'OUT-001'},
-   {h:'Care team',lines:['<strong>Dr. Rowan Ash (PCP)</strong>','216-555-0121','Thu 5 Nov, 10:00 · confirmed'],src:'ACC-001'},
-   {h:'Social needs',lines:['Lives alone; a neighbor checks in','Needs transport to the PCP','No food or cost issue disclosed'],src:'SOC-001'}],
-  timeline:[{at:'30 Oct 14:00',t:'Discharged · Harbor Hospital',p:'Received 14:05 and 14:07. Second message merged; no duplicate task.',src:'ADT-001A',dup:'ADT-001B merged'},{at:'30 Oct 13:30',t:'Discharge summary · furosemide 40 mg',p:'No reason for the dose change is given.',src:'EHR-001B'},{at:'30 Oct 13:00',t:'Bedside contact check',p:'Phone verified with the member.',src:'OUT-001'},{at:'30 Oct 10:00',t:'Labs · potassium 4.2, creatinine 1.1',p:'Final results.',src:'LAB-001A'},{at:'28 Oct 10:00',t:'Admitted · heart failure',p:'Harbor Hospital.',src:'ADT-001C'},{at:'1 Oct',t:'Pharmacy fill · furosemide 20 mg',p:'30-day supply.',src:'RX-001'}],
-  routes:[{l:'Member',num:'216-555-0101',s:'ok',note:'Verified 30 Oct · 09:00–11:00'},{l:'PCP team · Dr. Rowan Ash',num:'216-555-0121',s:'ok',note:'Dose confirmation and transport'}],
-  prefill:[{l:'Identity & plan',v:'Mmridul, 72 · MA PPO · SYN-001',src:'MEM-001'},{l:'Discharge',v:'30 Oct · heart failure · Harbor Hospital',src:'ADT-001A'},{l:'Discharge medicine',v:'Furosemide 40 mg daily (conflicts with PCP list)',src:'EHR-001B'},{l:'PCP & next visit',v:'Dr. Rowan Ash · Thu 5 Nov, 10:00',src:'ACC-001'},{l:'Living situation',v:'Lives alone; neighbor checks in',src:'SOC-001'},{l:'Language & best time',v:'English · 09:00–11:00',src:'OUT-001'}],
-  ask:[{l:'Medicines in hand',ph:'Read each bottle label: name, strength, how he takes it'},{l:'Weight today',ph:'kg or lb, and his usual weight'},{l:'Breathing and swelling',ph:'Compared with discharge day'},{l:'Member’s goal',ph:'In his own words'}]},
- vraj:{key:'vraj',id:'SYN-003',name:'Vraj',age:44,plan:'Medicaid',cond:'Repeat ED use',av:'warn',
-  score:{u:30,d:30,b:20,n:10},
-  scoreWhy:{u:'New admission alert with no reason given.',d:'Same-day verification; work slot 11:00.',b:'Phone disconnected; no alternate contact.',n:'New event awaiting RN review.'},
-  due:'11:00',dueToday:true,dueLabel:'Today',why:'Admitted? No reason given; phone dead',whySub:'Repeat ED use in claims',tags:['barriers'],
-  banner:{tone:'warn',icon:'?',title:'Admission alert with no reason or discharge status',text:'The alert says he was admitted to Riverside Hospital on Sun 1 Nov. It gives no reason and no discharge yet. His phone failed on 31 Oct and the appointment feed is down, so where he is right now is unknown.',src:['ADT-003','OUT-003','ACC-003'],never:'Stop dialing the dead number. Confirm his current setting with the facility first.'},
-  brief:[{t:'Admission alert from Riverside Hospital on Sun 1 Nov; no reason or discharge status in the message.',src:'ADT-003',st:'single'},{t:'Claims show at least 3 ED visits since July; recent visits may not have arrived yet.',src:'CLM-003',st:'single'},{t:'The phone on file was disconnected on the 31 Oct attempt; no alternate contact on file.',src:'OUT-003',st:'ok'}],
-  steps:['Call the facility to confirm where he is now','Request the discharge summary or current status','If he is home, use a PCP-approved route','Link him to his PCP after contact'],
-  actions:[{t:'Call Riverside Hospital to confirm his setting',d:'Facility team · 216-555-0133'},{t:'Request the discharge summary',d:'Not received yet'},{t:'Link to PCP after contact',d:'Dr. Imani Cole · 216-555-0123'}],
-  evidence:[
-   {d:'Admission',f:'Sun 1 Nov, 21:40 · Riverside Hospital · reason not given',st:'single',src:['ADT-003'],fr:'fresh',asof:'1 Nov'},
-   {d:'Current setting',f:'Inpatient or home: not known',st:'unknown',src:[],fr:'missing',asof:'—'},
-   {d:'ED visits',f:'At least 3 since July (claims through 30 Sep)',st:'single',src:['CLM-003'],fr:'lag',asof:'Claims 30 Sep'},
-   {d:'Phone',f:'216-555-0103 · disconnected',st:'ok',src:['OUT-003','MEM-003'],fr:'fresh',asof:'31 Oct'},
-   {d:'Appointments',f:'Feed unavailable since 31 Oct, 06:00',st:'unknown',src:['ACC-003'],fr:'down',asof:'Last success 31 Oct'},
-   {d:'Discharge summary',f:'Not received',st:'unknown',src:[],fr:'missing',asof:'—'}],
-  cards:[
-   {h:'Contact',lines:['<strong>216-555-0103 · disconnected</strong>','No alternate contact on file','English · best time unknown'],src:'OUT-003',w:'Dialing is blocked until a new number is verified.'},
-   {h:'Care team',lines:['<strong>Riverside Hospital · facility team</strong>','216-555-0133','PCP: Dr. Imani Cole · 216-555-0123'],src:'MEM-003'},
-   {h:'Social needs',lines:['Not screened in the last 12 months','Ask once he is reached'],src:'MEM-003'}],
-  timeline:[{at:'1 Nov 21:40',t:'Admitted · Riverside Hospital',p:'No reason or discharge status in the alert.',src:'ADT-003'},{at:'31 Oct 10:15',t:'Outreach attempt · number disconnected',p:'Carrier message: number not in service.',src:'OUT-003'},{at:'31 Oct 06:00',t:'Appointment feed last succeeded',p:'Feed unavailable since then.',src:'ACC-003'},{at:'19 Sep',t:'ED visit (claim)',p:'Third ED visit since July.',src:'CLM-003'}],
-  routes:[{l:'Member',num:'216-555-0103',s:'blocked',note:'Disconnected on 31 Oct · dialing blocked'},{l:'Facility team · Riverside Hospital',num:'216-555-0133',s:'ok',note:'First: confirm where he is now'},{l:'PCP team · Dr. Imani Cole',num:'216-555-0123',s:'ok',note:'Then: PCP-approved route if he is home'}],
-  defaultRoute:1,
-  prefill:[{l:'Identity & plan',v:'Vraj, 44 · Medicaid · SYN-003',src:'MEM-003'},{l:'Recent event',v:'Admitted 1 Nov · Riverside Hospital',src:'ADT-003'},{l:'ED use',v:'At least 3 visits since July',src:'CLM-003'},{l:'PCP',v:'Dr. Imani Cole',src:'MEM-003'}],
-  ask:[{l:'Current setting',ph:'Inpatient, discharged home, or elsewhere'},{l:'Admission reason',ph:'From the facility team'},{l:'Working phone number',ph:'New number, verified with him'},{l:'Member’s goal',ph:'In his own words'}]},
- shruti:{key:'shruti',id:'SYN-005',name:'Shruti',age:81,plan:'D-SNP',cond:'Fall, home support',av:'warn',
-  score:{u:30,d:30,b:20,n:10},
-  scoreWhy:{u:'Recent fall; home support not confirmed.',d:'Same-day check; work slot 12:00.',b:'Service not delivered; caregiver strain.',n:'New discharge awaiting the first RN review.'},
-  due:'12:00',dueToday:true,dueLabel:'Today',why:'Walker and home health not delivered',whySub:'Daughter is the authorized caregiver',tags:[],
-  banner:{tone:'warn',icon:'⚠',title:'Approved is not delivered',text:'Home health and a walker were approved on 29 Oct. Neither the first home-health visit nor the walker delivery has been confirmed. Her daughter is the authorized caregiver and says she is stretched thin.',src:['UM-005','OUT-005'],never:'A task closes only with delivery evidence, not with the approval.'},
-  brief:[{t:'Home Thu 29 Oct after a fall; discharged with home health.',src:'ADT-005',st:'single'},{t:'Home health and a walker were approved 29 Oct; no delivery or first visit confirmed.',src:'UM-005',st:'single'},{t:'Her daughter, the authorized caregiver, said on 30 Oct that she is stretched thin.',src:'OUT-005',st:'single'}],
-  steps:['Call her daughter at 12:00 (authorized for care coordination)','Confirm the first home-health visit with the agency','Confirm the walker delivery with the supplier','Ask how her daughter is coping'],
-  actions:[{t:'Call her daughter at 12:00',d:'Authorized caregiver · 216-555-0106'},{t:'Confirm the first home-health visit',d:'Synthetic Home Health · 216-555-0150'},{t:'Confirm the walker delivery',d:'Synthetic Medical Supply · 216-555-0151'}],
-  evidence:[
-   {d:'Discharge',f:'Thu 29 Oct · Harbor Hospital · after a fall',st:'single',src:['ADT-005'],fr:'fresh',asof:'29 Oct'},
-   {d:'Home health',f:'Approved 29 Oct · first visit not confirmed',st:'unknown',src:['UM-005'],fr:'fresh',asof:'29 Oct'},
-   {d:'Walker',f:'Approved 29 Oct · delivery not confirmed',st:'unknown',src:['UM-005'],fr:'fresh',asof:'29 Oct'},
-   {d:'Caregiver',f:'Daughter · authorized for care coordination',st:'ok',src:['MEM-005','OUT-005'],fr:'fresh',asof:'30 Oct'},
-   {d:'Labs',f:'No new results; lab feed stale',st:'unknown',src:['LAB-005'],fr:'stale',asof:'Last refresh 30 Oct'}],
-  cards:[
-   {h:'Contact',lines:['<strong>Daughter (authorized) · 216-555-0106</strong>','Scope: care coordination','Member line: 216-555-0105'],src:'MEM-005'},
-   {h:'Services',lines:['<strong>Synthetic Home Health</strong> · 216-555-0150','<strong>Synthetic Medical Supply</strong> · 216-555-0151','Both approved 29 Oct'],src:'UM-005'},
-   {h:'Social needs',lines:['Lives alone; daughter visits evenings','Daughter drives her to visits'],src:'SOC-005',w:'Caregiver strain reported on 30 Oct.'}],
-  timeline:[{at:'30 Oct 17:30',t:'Call with daughter',p:'“I’m stretched thin.” Asked when the walker arrives.',src:'OUT-005'},{at:'29 Oct 16:00',t:'Home health and walker approved',p:'Delivery status not reported.',src:'UM-005'},{at:'29 Oct 12:00',t:'Discharged · after a fall',p:'Home with home health.',src:'ADT-005'}],
-  routes:[{l:'Caregiver · daughter',num:'216-555-0106',s:'ok',note:'Authorized for care coordination'},{l:'Member',num:'216-555-0105',s:'ok',note:'Prefers her daughter on calls'},{l:'Home-health agency',num:'216-555-0150',s:'ok',note:'Confirm the first visit'},{l:'Equipment supplier',num:'216-555-0151',s:'ok',note:'Confirm the walker delivery'}],
-  prefill:[{l:'Identity & plan',v:'Shruti, 81 · D-SNP · SYN-005',src:'MEM-005'},{l:'Authorized caregiver',v:'Daughter · care coordination',src:'MEM-005'},{l:'Discharge',v:'29 Oct · after a fall',src:'ADT-005'},{l:'Services approved',v:'Home health + walker, 29 Oct',src:'UM-005'}],
-  ask:[{l:'Walker delivered?',ph:'Date and who confirmed it'},{l:'First home-health visit',ph:'Date and agency confirmation'},{l:'Falls or near-falls since discharge',ph:'Any since 29 Oct'},{l:'How is her daughter coping?',ph:'In her own words'}]},
- shlok:{key:'shlok',id:'SYN-002',name:'Shlok',age:58,plan:'Commercial',cond:'Diabetes',av:'gray',
-  score:{u:10,d:20,b:20,n:0},
-  scoreWhy:{u:'Rising A1c and a possible supply gap; no acute event.',d:'Due Tue 18:00, about 34 hours away (within 3 days).',b:'Cost barrier; Spanish, evenings only.',n:'Existing case; no new event.'},
-  due:'18:00',dueToday:false,dueLabel:'Tue 3 Nov',why:'Reversed fill; cost; Spanish evenings',whySub:'A1c 8.1% → 9.6%',tags:['meds','scheduled'],
-  banner:{tone:'warn',icon:'⚠',title:'Possible supply gap and cost barrier',text:'His last paid metformin fill was later reversed, so he may be about 15 days past his recorded supply. His A1c rose from 8.1% (12 May) to 9.6% (15 Oct). He has said cost is a problem.',textDown:'The pharmacy feed is down, so his supply cannot be estimated right now. His A1c rose from 8.1% (12 May) to 9.6% (15 Oct). He has said cost is a problem.',src:['RX-002','LAB-002B','OUT-002'],never:'“No fill seen” is never recorded as “not taking”. Ask him.'},
-  brief:[{t:'A1c rose from 8.1% on 12 May to 9.6% on 15 Oct.',src:'LAB-002B',st:'single'},{t:'The last metformin fill was paid, then reversed; estimated 15 days past recorded supply.',src:'RX-002',st:'single',pbm:true,tDown:'Pharmacy feed is down since 06:00, so supply cannot be estimated.'},{t:'He said cost is a problem; prefers Spanish, 17:30–19:00.',src:'OUT-002',st:'single'}],
-  steps:['Schedule a Spanish call for Tue 18:00 with an interpreter','Ask about cost and the medicine he has at home','Offer a generic or 90-day supply'],
-  actions:[{t:'Schedule a Spanish call, Tue 18:00',d:'Interpreter booked · 17:30–19:00 window'},{t:'Ask about cost and supply at home',d:'Fill was reversed; do not assume'},{t:'Offer a generic or 90-day supply',d:'Check plan cost-share first'}],
-  evidence:[
-   {d:'A1c',f:'8.1% (12 May) → 9.6% (15 Oct)',st:'single',src:['LAB-002A','LAB-002B'],fr:'fresh',asof:'15 Oct'},
-   {d:'Pharmacy',f:'Metformin fill paid, then reversed · ~15 days past supply (estimate)',st:'single',src:['RX-002'],fr:'fresh',asof:'Ledger 2 Nov',pbm:true},
-   {d:'Cost barrier',f:'Said copays are hard to manage',st:'single',src:['OUT-002'],fr:'fresh',asof:'Oct call'},
-   {d:'Language & time',f:'Spanish · 17:30–19:00',st:'ok',src:['OUT-002','MEM-002'],fr:'fresh',asof:'Oct'}],
-  cards:[
-   {h:'Contact',lines:['<strong>216-555-0102 · mobile</strong>','Spanish · interpreter needed','Evenings, 17:30–19:00'],src:'OUT-002'},
-   {h:'Care team',lines:['<strong>PCP on file</strong>','A1c ordered 15 Oct','No visit booked'],src:'MEM-002'},
-   {h:'Social needs',lines:['Cost of medicines is a concern','Works days'],src:'SOC-002'}],
-  timeline:[{at:'15 Oct',t:'A1c 9.6%',p:'Up from 8.1% in May.',src:'LAB-002B'},{at:'Oct',t:'Metformin fill reversed',p:'Paid, then reversed by the pharmacy.',src:'RX-002'},{at:'12 May',t:'A1c 8.1%',p:'Prior result.',src:'LAB-002A'}],
-  routes:[{l:'Member · Spanish',num:'216-555-0102',s:'ok',note:'Tue 18:00 with an interpreter'}],
-  prefill:[{l:'Identity & plan',v:'Shlok, 58 · Commercial · SYN-002',src:'MEM-002'},{l:'Language & time',v:'Spanish · 17:30–19:00',src:'OUT-002'},{l:'Latest A1c',v:'9.6% on 15 Oct',src:'LAB-002B'},{l:'Pharmacy',v:'Fill reversed; supply gap estimated',src:'RX-002'}],
-  ask:[{l:'Metformin at home',ph:'How many days left, how he takes it'},{l:'Cost',ph:'What he pays, what would help'},{l:'Member’s goal',ph:'In his own words'}]}
+pranav:{key:'pranav',id:'SYN-004',name:'Pranav',age:36,plan:'Medicaid',cond:'Behavioral-health discharge',lvl:'hi',
+ owner:'Maria, RN · BH co-manager Asha, LCSW',
+ score:{u:40,d:30,b:20,n:10},
+ sw:{u:'Behavioral-health discharge; current safety not re-checked.',d:'Same-day review; callback window 09:00–11:00.',b:'Shared shelter phone and housing loss.',n:'New discharge awaiting the first RN review.'},
+ tie:'Tied at 100 with Mmridul. The behavioral-health safety rule puts Pranav first.',
+ due:'09:00',today:true,dueL:'Today',why:'BH discharge 31 Oct; safety not re-checked',whyS:'Shared shelter phone · lost housing',tags:['barriers'],
+ banner:{tone:'risk',ic:'!',t:'Behavioral-health discharge: safety not re-checked, no mental-health visit booked',x:'Discharged from Willow Crisis Unit on Sat 31 Oct. The safety screen in his discharge summary was copied forward, not re-done. His 3 Nov visit is with his PCP, which does not count as the 7-day mental-health follow-up (window closes Sat 7 Nov).',src:['ADT-004','EHR-004','ACC-004'],never:'The phone on file is the shelter’s reception desk. First contact is a neutral callback request only.'},
+ brief:[{t:'Discharged from Willow Crisis Unit on Sat 31 Oct; no mental-health follow-up visit found.',src:['ADT-004','ACC-004'],st:'single'},{t:'He lost his housing and is in a shelter; the phone on file is the shelter’s reception desk.',src:['SOC-004B','OUT-004'],st:'single'},{t:'The safety screen in the discharge summary was copied forward from before, not re-checked.',src:['EHR-004'],st:'single'}],
+ steps:['Leave a neutral callback request at the shelter desk (09:00–11:00)','When he calls back, confirm he can talk privately, then check safety','Book a mental-health visit before Sat 7 Nov','Confirm the housing navigator and transport for 3 Nov'],
+ actions:[{t:'Leave a neutral callback request',d:'Shelter desk · 216-555-0104 · no clinical details'},{t:'Book a mental-health visit before Sat 7 Nov',d:'The 3 Nov PCP visit does not count'},{t:'Confirm housing navigator and clinic transport',d:'Referral accepted 31 Oct; placement unconfirmed'}],
+ ev:[
+  {d:'Discharge',f:'Sat 31 Oct, 11:00 · Willow Crisis Unit · behavioral-health episode',st:'single',src:['ADT-004'],fr:'fresh',ao:'31 Oct'},
+  {d:'Mental-health visit',f:'None found · 7-day window closes Sat 7 Nov',st:'unknown',src:['ACC-004'],fr:'missing',ao:'Checked 2 Nov'},
+  {d:'PCP visit',f:'Tue 3 Nov, 10:30 · Willow Community Clinic · confirmed',st:'single',src:['ACC-004'],fr:'fresh',ao:'31 Oct'},
+  {d:'Current safety',f:'Screen copied forward into the discharge summary; not re-checked',st:'unknown',src:['EHR-004'],fr:'stale',ao:'Copied forward'},
+  {d:'Medicine',f:'Sertraline 50 mg daily · filled 12 Oct, supply to 10 Nov',st:'ok',src:['RX-004','EHR-004'],fr:'fresh',ao:'Fill and summary agree',pbm:true},
+  {d:'Housing',f:'30 Oct: lost housing, shelter placement · 15 Apr: “stable rented room”',st:'conflict',src:['SOC-004B','SOC-004A'],fr:'fresh',ao:'Newer report wins; re-ask'},
+  {d:'Phone',f:'216-555-0104 · shelter reception desk (shared)',st:'single',src:['OUT-004'],fr:'fresh',ao:'31 Oct'},
+  {d:'Housing help',f:'Housing navigation referral accepted · placement unconfirmed',st:'single',src:['SVC-004'],fr:'fresh',ao:'31 Oct'}],
+ cards:[
+  {h:'Contact & privacy',l:['<strong>Shelter reception desk · 216-555-0104</strong>','Shared line: neutral callback requests only','English · 09:00–11:00'],src:'OUT-004',w:'Never leave clinical details at the desk.'},
+  {h:'Care team',l:['<strong>Willow Community Clinic (PCP)</strong>','216-555-0124 · Tue 3 Nov, 10:30','BH co-manager: Asha, LCSW'],src:'ACC-004'},
+  {h:'Social needs',l:['Lost housing; in a shelter','Needs transport to the clinic','Asked for food support'],src:'SOC-004B',w:'The April screen said “stable rented room”. It is out of date.'}],
+ tl:[{at:'31 Oct 11:00',t:'Discharged · Willow Crisis Unit',p:'Disposition: home; support to confirm.',src:'ADT-004'},{at:'31 Oct 10:00',t:'Social-work contact check',p:'Shelter reception phone; callback arranged.',src:'OUT-004'},{at:'31 Oct 10:00',t:'Housing navigation referral accepted',p:'Social worker assigned; placement unconfirmed.',src:'SVC-004'},{at:'31 Oct 09:00',t:'Discharge care summary',p:'Safety screen copied forward from earlier.',src:'EHR-004'},{at:'30 Oct 16:00',t:'Social-needs screen',p:'Lost housing; shelter placement; food support requested.',src:'SOC-004B'},{at:'12 Oct',t:'Sertraline 50 mg filled',p:'30-day supply.',src:'RX-004'},{at:'1 Oct',t:'Depression follow-up visit (claim)',p:'Billed 24 days later.',src:'CLM-004'}],
+ routes:[{l:'Shelter reception desk (shared)',ph:'216-555-0104',s:'gated',n:'Neutral callback request only · 09:00–11:00'},{l:'Private callback to Maria',ph:'216-555-0190',s:'ok',n:'When he calls back: confirm he can talk privately'},{l:'Willow Community Clinic',ph:'216-555-0124',s:'ok',n:'Book a mental-health visit; confirm 3 Nov transport'}],
+ script:'“Hello, this is Maria from the health plan. Could you please ask Pranav to call Maria at 216-555-0190? Thank you.”',
+ pre:[{l:'Identity & plan',v:'Pranav, 36 · Medicaid · SYN-004',src:'MEM-004'},{l:'Discharge',v:'31 Oct · Willow Crisis Unit',src:'ADT-004'},{l:'Medicine',v:'Sertraline 50 mg daily',src:'RX-004'},{l:'Living situation',v:'Shelter placement',src:'SOC-004B'},{l:'PCP visit',v:'Tue 3 Nov, 10:30 · Willow Community Clinic',src:'ACC-004'}],
+ ask:[{l:'Safe right now?',ph:'Ask privately. Follow the escalation procedure if not.'},{l:'Taking sertraline?',ph:'What he has and how he takes it'},{l:'Mental-health visit',ph:'Date booked, and with whom'},{l:'Member’s goal',ph:'In his own words'}]},
+mmridul:{key:'mmridul',id:'SYN-001',name:'Mmridul',age:72,plan:'Medicare Advantage PPO',cond:'Heart failure',lvl:'hi',owner:'Maria, RN',
+ score:{u:40,d:30,b:20,n:10},
+ sw:{u:'Heart-failure discharge with an unexplained water-pill dose change.',d:'Inside the 2-business-day contact window; slot 10:00.',b:'Dose conflict, and transport not arranged.',n:'New discharge awaiting the first RN review.'},
+ tie:'Tied at 100 with Pranav, who goes first under the behavioral-health safety rule.',
+ due:'10:00',today:true,dueL:'Today',why:'⚠ Furosemide 40 mg vs 20 mg; no new fill',whyS:'Home Fri 30 Oct · heart failure',warn:true,tags:['meds'],
+ banner:{tone:'warn',ic:'⚠',t:'Dose conflict · furosemide (water pill)',x:'The discharge summary says <b>40 mg daily</b> (EHR-001B, 30 Oct). The PCP list says <b>20 mg daily</b> (EHR-001A, 1 Oct). The only fill on record is the old 20 mg (RX-001, 1 Oct), and that supply ran out on 30 Oct.',xd:'The discharge summary says <b>40 mg daily</b> (EHR-001B, 30 Oct). The PCP list says <b>20 mg daily</b> (EHR-001A, 1 Oct). The pharmacy feed is down, so fill status is <b>unknown</b>, not “not filled”.',src:['EHR-001B','EHR-001A','RX-001'],never:'The workbench never picks a dose. Maria and the prescriber decide.'},
+ brief:[{t:'Home on Fri 30 Oct after a heart-failure stay; the discharge summary says furosemide 40 mg daily.',src:['EHR-001B'],st:'single'},{t:'The only fill on record is the old 20 mg from 1 Oct; that supply ended 30 Oct.',src:['RX-001'],st:'single',pbm:true,td:'The pharmacy feed is down since 06:00, so fill status is unknown.'},{t:'PCP visit Thu 5 Nov, 10:00 with Dr. Rowan Ash; transport is not yet arranged.',src:['ACC-001','SVC-001'],st:'single'}],
+ steps:['Call by 10:00: pills in hand, weight, breathing and swelling','Ask the prescriber to confirm the intended dose','Arrange transport for the 5 Nov PCP visit'],
+ actions:[{t:'Call by 10:00: pills, weight, symptoms',d:'216-555-0101 · verified 30 Oct'},{t:'Ask the prescriber to confirm the dose',d:'Share both sources: EHR-001A and EHR-001B'},{t:'Arrange transport for Thu 5 Nov',d:'Dr. Rowan Ash · 10:00'}],
+ ev:[
+  {d:'Discharge',f:'Fri 30 Oct, 14:00 · Harbor Hospital · 2 messages merged into 1 event',st:'single',src:['ADT-001A','ADT-001B'],fr:'fresh',ao:'30 Oct'},
+  {d:'Discharge medicine',f:'Furosemide 40 mg daily · no reason for the change given',st:'conflict',src:['EHR-001B'],fr:'fresh',ao:'30 Oct'},
+  {d:'PCP medicine list',f:'Furosemide 20 mg daily',st:'conflict',src:['EHR-001A'],fr:'lag',ao:'1 Oct'},
+  {d:'Pharmacy fill',f:'20 mg · 30-day supply · ended 30 Oct',st:'single',src:['RX-001'],fr:'fresh',ao:'Filled 1 Oct',pbm:true},
+  {d:'Potassium',f:'4.2 mmol/L',st:'single',src:['LAB-001A'],fr:'fresh',ao:'30 Oct'},
+  {d:'Creatinine',f:'1.1 mg/dL',st:'single',src:['LAB-001B'],fr:'fresh',ao:'30 Oct'},
+  {d:'Daily weight',f:'Not received · ask on the call',st:'unknown',src:[],fr:'missing',ao:'—'},
+  {d:'Last claim',f:'Heart-failure office visit, 15 Sep',st:'single',src:['CLM-001'],fr:'lag',ao:'45-day lag is normal'}],
+ cards:[
+  {h:'Contact',l:['<strong>216-555-0101 · his own phone</strong>','Verified at the bedside, 30 Oct','English · 09:00–11:00'],src:'OUT-001'},
+  {h:'Care team',l:['<strong>Dr. Rowan Ash (PCP)</strong>','216-555-0121 · Thu 5 Nov, 10:00','Transport: not yet requested'],src:'ACC-001'},
+  {h:'Social needs',l:['Lives alone; a neighbor checks in','Needs transport to the PCP','No food or cost issue disclosed'],src:'SOC-001'}],
+ tl:[{at:'30 Oct 14:00',t:'Discharged · Harbor Hospital',p:'Received 14:05 and again 14:07. The second message was merged; no duplicate task.',src:'ADT-001A'},{at:'30 Oct 13:30',t:'Discharge summary · furosemide 40 mg',p:'No reason given for the dose change.',src:'EHR-001B'},{at:'30 Oct 13:00',t:'Bedside contact check',p:'Phone verified with him.',src:'OUT-001'},{at:'30 Oct 10:00',t:'Labs · potassium 4.2, creatinine 1.1',p:'Final results.',src:'LAB-001A'},{at:'28 Oct 10:00',t:'Admitted · heart failure',p:'Harbor Hospital.',src:'ADT-001C'},{at:'1 Oct',t:'Furosemide 20 mg filled',p:'30-day supply.',src:'RX-001'}],
+ routes:[{l:'Mmridul (member)',ph:'216-555-0101',s:'ok',n:'Verified 30 Oct · best 09:00–11:00'},{l:'Dr. Rowan Ash’s office',ph:'216-555-0121',s:'ok',n:'Dose confirmation and transport'}],
+ pre:[{l:'Identity & plan',v:'Mmridul, 72 · MA PPO · SYN-001',src:'MEM-001'},{l:'Discharge',v:'30 Oct · heart failure · Harbor Hospital',src:'ADT-001A'},{l:'Discharge medicine',v:'Furosemide 40 mg daily (conflicts with PCP list)',src:'EHR-001B'},{l:'PCP visit',v:'Thu 5 Nov, 10:00 · Dr. Rowan Ash',src:'ACC-001'},{l:'Living situation',v:'Lives alone; neighbor checks in',src:'SOC-001'}],
+ ask:[{l:'Medicines in hand',ph:'Read each label: name, strength, how he takes it'},{l:'Weight today',ph:'And his usual weight'},{l:'Breathing and swelling',ph:'Compared with discharge day'},{l:'Member’s goal',ph:'In his own words'}]},
+vraj:{key:'vraj',id:'SYN-003',name:'Vraj',age:44,plan:'Medicaid',cond:'Asthma · repeat ED use',lvl:'md',owner:'Maria, RN',
+ score:{u:30,d:30,b:20,n:10},
+ sw:{u:'New admission with no reason given.',d:'Same-day check; slot 11:00.',b:'Phone disconnected; no other contact on file.',n:'New event awaiting RN review.'},
+ due:'11:00',today:true,dueL:'Today',why:'Admitted? No reason given; phone dead',whyS:'4th hospital event in 5 weeks',tags:['barriers'],
+ banner:{tone:'warn',ic:'?',t:'Admitted with no reason, and his phone is dead',x:'Elm Hospital sent an admission alert on Sun 1 Nov at 19:00 with no reason and no discharge yet. His number failed on 21 and 26 Oct, and the scheduling feed is down, so where he is right now is unknown.',src:['ADT-003D','OUT-003A','ACC-003'],never:'Do not redial the dead number. Confirm his setting with the hospital first.'},
+ brief:[{t:'Admitted to Elm Hospital on Sun 1 Nov at 19:00; no reason and no discharge yet.',src:['ADT-003D'],st:'single'},{t:'This is his 4th hospital event in 5 weeks (ED on 29 Sep, 12 Oct, 30 Oct); claims still show only 15 Aug.',src:['ADT-003C','CLM-003'],st:'single'},{t:'His phone was disconnected on 21 and 26 Oct; there is no other contact on file.',src:['OUT-003A','OUT-003B'],st:'ok'}],
+ steps:['Call Elm Hospital to confirm where he is now','Ask for the admission and 30 Oct ED summaries','If he is home, reach him through Dr. Ellis Fern’s office','Then plan asthma follow-up with his PCP'],
+ actions:[{t:'Call Elm Hospital to confirm his setting',d:'Facility team · 216-555-0133'},{t:'Request the admission and 30 Oct ED summaries',d:'The summary on file is from 12 Oct'},{t:'Ask Dr. Ellis Fern’s office for a working contact',d:'216-555-0123'}],
+ ev:[
+  {d:'Admission',f:'Sun 1 Nov, 19:00 · Elm Hospital · reason not supplied',st:'single',src:['ADT-003D'],fr:'fresh',ao:'1 Nov'},
+  {d:'Where he is now',f:'Still inpatient, or home: not known',st:'unknown',src:[],fr:'missing',ao:'—'},
+  {d:'ED visits',f:'29 Sep (asthma) · 12 Oct (wheezing) · 30 Oct (reason missing)',st:'single',src:['ADT-003A','ADT-003B','ADT-003C'],fr:'fresh',ao:'30 Oct alert arrived 37 h late'},
+  {d:'Claims',f:'Only one ED visit billed so far (15 Aug)',st:'single',src:['CLM-003'],fr:'lag',ao:'Recent visits not billed yet'},
+  {d:'ED summary',f:'Describes 12 Oct, not 30 Oct · latest reason unknown',st:'conflict',src:['EHR-003'],fr:'stale',ao:'Wrong visit'},
+  {d:'Phone',f:'216-555-0103 · disconnected',st:'ok',src:['OUT-003A','OUT-003B'],fr:'fresh',ao:'21 and 26 Oct'},
+  {d:'Appointments',f:'Scheduling feed down since 31 Oct, 06:00',st:'unknown',src:['ACC-003'],fr:'down',ao:'Shown as unknown, not “none”'},
+  {d:'Inhaler',f:'Albuterol filled 10 Oct',st:'single',src:['RX-003'],fr:'fresh',ao:'10 Oct',pbm:true}],
+ cards:[
+  {h:'Contact',l:['<strong>216-555-0103 · disconnected</strong>','No other contact on file','English · best time unknown'],src:'OUT-003A',w:'Dialing is blocked until a new number is verified.'},
+  {h:'Care team',l:['<strong>Elm Hospital · facility team</strong>','216-555-0133','PCP: Dr. Ellis Fern · 216-555-0123'],src:'ACC-003'},
+  {h:'Social needs',l:['Current residence unverified','Transport sometimes unavailable'],src:'SOC-003',w:'This screen is from May. Re-ask once he is reached.'}],
+ tl:[{at:'1 Nov 19:00',t:'Admitted · Elm Hospital',p:'No reason; no discharge message yet.',src:'ADT-003D'},{at:'30 Oct 20:00',t:'ED visit · reason missing',p:'The alert arrived 37 hours late.',src:'ADT-003C'},{at:'26 Oct',t:'Old auto-dialer retried the dead number',p:'Disconnected again.',src:'OUT-003B'},{at:'21 Oct',t:'Call attempt · number disconnected',p:'No other contact on file.',src:'OUT-003A'},{at:'12 Oct 21:00',t:'ED visit · wheezing',p:'Elm Emergency.',src:'ADT-003B'},{at:'10 Oct',t:'Albuterol inhaler filled',p:'30-day supply.',src:'RX-003'},{at:'29 Sep 18:00',t:'ED visit · asthma symptoms',p:'Elm Emergency.',src:'ADT-003A'},{at:'15 Aug',t:'ED visit (claim)',p:'The only one billed so far.',src:'CLM-003'}],
+ routes:[{l:'Vraj (member)',ph:'216-555-0103',s:'blocked',n:'Disconnected on 21 and 26 Oct · dialing blocked'},{l:'Elm Hospital facility team',ph:'216-555-0133',s:'ok',n:'First: confirm where he is now'},{l:'Dr. Ellis Fern’s office',ph:'216-555-0123',s:'ok',n:'Then: a contact route his PCP approves'}],
+ dr:1,
+ pre:[{l:'Identity & plan',v:'Vraj, 44 · Medicaid · SYN-003',src:'MEM-003'},{l:'Latest event',v:'Admitted 1 Nov, 19:00 · Elm Hospital',src:'ADT-003D'},{l:'Recent ED visits',v:'29 Sep, 12 Oct, 30 Oct',src:'ADT-003C'},{l:'PCP',v:'Dr. Ellis Fern',src:'ACC-003'},{l:'Inhaler',v:'Albuterol, filled 10 Oct',src:'RX-003'}],
+ ask:[{l:'Where is he now?',ph:'Inpatient, discharged home, or elsewhere'},{l:'Reason for admission',ph:'From the facility team'},{l:'Working phone number',ph:'New number, verified with him'},{l:'Member’s goal',ph:'In his own words'}]},
+shruti:{key:'shruti',id:'SYN-005',name:'Shruti',age:81,plan:'Medicare Advantage D-SNP',cond:'Fall · support at home',lvl:'md',owner:'Maria, RN',
+ score:{u:30,d:30,b:20,n:10},
+ sw:{u:'Recent fall; home support not confirmed.',d:'Due by 12:00; daughter’s window is 09:00–11:00.',b:'Services not confirmed; caregiver strain.',n:'New discharge awaiting the first RN review.'},
+ due:'12:00',today:true,dueL:'Today',why:'Walker and home health not confirmed',whyS:'Daughter Riya can’t manage transfers',tags:[],
+ banner:{tone:'warn',ic:'⚠',t:'Approved is not delivered',x:'Home health and a walker were authorized on 30 Oct. Neither the first home visit nor the walker delivery is confirmed, and her daughter Riya says she can’t manage transfers alone.',src:['SVC-005A','SVC-005B','OUT-005B'],never:'A task closes only with delivery evidence, not with the authorization.'},
+ brief:[{t:'Home on Thu 29 Oct after a fall; she needs help with transfers.',src:['EHR-005'],st:'single'},{t:'Home health and a walker were authorized 30 Oct; the first visit and delivery are not confirmed.',src:['SVC-005A','SVC-005B'],st:'single'},{t:'Her daughter Riya (authorized for care coordination) says she can’t manage transfers alone.',src:['OUT-005B'],st:'single'}],
+ steps:['Call Riya in her 09:00–11:00 window (due by 12:00)','Confirm the first home-health visit','Confirm the walker delivery','Ask how Riya is coping; check transport for the 4 Nov PCP visit'],
+ actions:[{t:'Call Riya between 09:00 and 11:00',d:'Authorized caregiver · 216-555-0106'},{t:'Confirm the first home-health visit',d:'Authorized 30 Oct · visit unconfirmed'},{t:'Confirm the walker delivery',d:'Authorized 30 Oct · delivery pending'}],
+ ev:[
+  {d:'Discharge',f:'Thu 29 Oct, 11:00 · Harbor Hospital · fall, deconditioning',st:'single',src:['ADT-005'],fr:'fresh',ao:'29 Oct'},
+  {d:'Home health',f:'Authorized 30 Oct · first visit not confirmed',st:'unknown',src:['SVC-005A'],fr:'fresh',ao:'30 Oct'},
+  {d:'Walker',f:'Authorized 30 Oct · delivery pending',st:'unknown',src:['SVC-005B'],fr:'fresh',ao:'30 Oct'},
+  {d:'Caregiver',f:'Riya (daughter) · authorized for care coordination',st:'ok',src:['OUT-005A','OUT-005B'],fr:'fresh',ao:'29–30 Oct'},
+  {d:'Living situation',f:'30 Oct: daughter helping, can’t transfer alone · Feb: “lives independently”',st:'conflict',src:['SOC-005B','SOC-005A'],fr:'fresh',ao:'Newer report wins; re-ask'},
+  {d:'Hemoglobin',f:'11.8 g/dL',st:'single',src:['LAB-005'],fr:'stale',ao:'28 Oct · lab feed stale'},
+  {d:'Blood-pressure medicine',f:'Amlodipine 5 mg · refilled 3 days early on 20 Oct',st:'single',src:['RX-005'],fr:'fresh',ao:'20 Oct',pbm:true},
+  {d:'PCP visit',f:'Wed 4 Nov, 11:00 · Dr. Sage Elm · confirmed',st:'single',src:['ACC-005'],fr:'fresh',ao:'29 Oct'}],
+ cards:[
+  {h:'Contact',l:['<strong>Riya (daughter, authorized) · 216-555-0106</strong>','Scope: care coordination · 09:00–11:00','Shruti’s line: 216-555-0105'],src:'OUT-005A'},
+  {h:'Care team',l:['<strong>Dr. Sage Elm (PCP)</strong>','216-555-0125 · Wed 4 Nov, 11:00','Home health and walker: authorized, not confirmed'],src:'ACC-005'},
+  {h:'Social needs',l:['Daughter helping for now','Cannot transfer on her own'],src:'SOC-005B',w:'The February screen said “lives independently”. It is out of date.'}],
+ tl:[{at:'30 Oct 10:00',t:'Riya called in',p:'She can’t manage transfers alone; first home visit not confirmed.',src:'OUT-005B'},{at:'30 Oct 09:30',t:'Walker authorized',p:'Delivery pending confirmation.',src:'SVC-005B'},{at:'30 Oct 09:00',t:'Home health authorized',p:'First visit unconfirmed.',src:'SVC-005A'},{at:'29 Oct 11:00',t:'Discharged · Harbor Hospital',p:'After a fall; needs help with transfers.',src:'ADT-005'},{at:'29 Oct 10:00',t:'Consent recorded',p:'Shruti authorized Riya for care coordination.',src:'OUT-005A'},{at:'28 Oct',t:'Hemoglobin 11.8 g/dL',p:'Lab feed stale since 30 Oct.',src:'LAB-005'},{at:'20 Oct',t:'Amlodipine refilled 3 days early',p:'Overlap noted; not an adherence claim.',src:'RX-005'}],
+ routes:[{l:'Riya (daughter, authorized)',ph:'216-555-0106',s:'ok',n:'Care coordination · 09:00–11:00'},{l:'Shruti (member)',ph:'216-555-0105',s:'ok',n:'Prefers Riya on calls about services'},{l:'Dr. Sage Elm’s office',ph:'216-555-0125',s:'ok',n:'Transport and the 4 Nov visit'}],
+ pre:[{l:'Identity & plan',v:'Shruti, 81 · MA D-SNP · SYN-005',src:'MEM-005'},{l:'Authorized caregiver',v:'Riya (daughter) · care coordination',src:'OUT-005A'},{l:'Discharge',v:'29 Oct · fall · Harbor Hospital',src:'ADT-005'},{l:'Services authorized',v:'Home health + walker, 30 Oct',src:'SVC-005A'},{l:'PCP visit',v:'Wed 4 Nov, 11:00 · Dr. Sage Elm',src:'ACC-005'}],
+ ask:[{l:'Walker delivered?',ph:'Date, and who confirmed it'},{l:'First home-health visit',ph:'Date, and agency confirmation'},{l:'Falls since discharge',ph:'Any since 29 Oct'},{l:'How is Riya coping?',ph:'In her own words'}]},
+shlok:{key:'shlok',id:'SYN-002',name:'Shlok',age:58,plan:'Commercial PPO',cond:'Type 2 diabetes',lvl:'lo',owner:'Maria, RN',
+ score:{u:20,d:20,b:10,n:0},
+ sw:{u:'Rising A1c and a possible supply gap; no acute event.',d:'Due Tue 18:00, about 34 hours away (within 3 days).',b:'Cost barrier.',n:'Existing case; no new event.'},
+ due:'18:00',today:false,dueL:'Tue 3 Nov',why:'Supply gap; cost barrier; Spanish evenings',whyS:'A1c 8.1% → 9.6%',tags:['meds','scheduled'],
+ banner:{tone:'warn',ic:'⚠',t:'Possible supply gap and a cost barrier',x:'His metformin supply ran out on 17 Oct. A refill on 18 Oct was paid and then reversed the same day, so it adds nothing. His A1c rose from 8.1% to 9.6%, and on 28 Oct he said copays make him delay refills.',xd:'The pharmacy feed is down, so his supply cannot be estimated right now. His A1c rose from 8.1% to 9.6%, and on 28 Oct he said copays make him delay refills.',src:['RX-002','RX-002R','OUT-002'],never:'“No fill seen” is never recorded as “not taking”. Ask him.'},
+ brief:[{t:'A1c rose from 8.1% (12 May) to 9.6% (15 Oct).',src:['LAB-002A','LAB-002B'],st:'single'},{t:'Supply ended 17 Oct; the 18 Oct refill was reversed, leaving about 15 days uncovered.',src:['RX-002','RX-002R'],st:'single',pbm:true,td:'The pharmacy feed is down since 06:00, so supply cannot be estimated.'},{t:'On 28 Oct he said he delays refills because of the copay; Spanish, 17:30–19:00.',src:['OUT-002'],st:'single'}],
+ steps:['Book a Spanish interpreter for Tue 17:30–19:00','Ask what metformin he has at home and what he pays','Offer a generic or 90-day supply; push the affordability review','Ask Dr. Quinn Lake whether to see him before 12 Nov'],
+ actions:[{t:'Schedule a Spanish call, Tue 17:30–19:00',d:'Book the interpreter now'},{t:'Ask about supply at home and cost',d:'Reversed refill; do not assume'},{t:'Move the affordability review forward',d:'Referral drafted 28 Oct, not reviewed'}],
+ ev:[
+  {d:'A1c',f:'8.1% (12 May) → 9.6% (15 Oct)',st:'single',src:['LAB-002A','LAB-002B'],fr:'fresh',ao:'15 Oct'},
+  {d:'Last paid fill',f:'Metformin ER 500 mg, two tablets nightly · supply to 17 Oct',st:'single',src:['RX-002'],fr:'fresh',ao:'Filled 18 Sep',pbm:true},
+  {d:'18 Oct refill',f:'Paid, then reversed the same day · counts as zero',st:'single',src:['RX-002P','RX-002R'],fr:'fresh',ao:'18 Oct',pbm:true},
+  {d:'Dose change',f:'One → two tablets, documented by the prescriber · not flagged as a conflict',st:'single',src:['EHR-002I'],fr:'lag',ao:'1 Sep'},
+  {d:'Cost barrier',f:'Delays refills because of the copay',st:'single',src:['OUT-002','SOC-002'],fr:'fresh',ao:'28 Oct (same call)'},
+  {d:'PCP visit',f:'Thu 12 Nov, 16:00 · Dr. Quinn Lake · confirmed',st:'single',src:['ACC-002'],fr:'fresh',ao:'15 Oct'},
+  {d:'Affordability review',f:'Referral drafted · not yet reviewed',st:'single',src:['SVC-002'],fr:'fresh',ao:'28 Oct'}],
+ cards:[
+  {h:'Contact',l:['<strong>216-555-0102 · his mobile</strong>','Spanish · interpreter needed','Evenings, 17:30–19:00'],src:'OUT-002'},
+  {h:'Care team',l:['<strong>Dr. Quinn Lake (PCP)</strong>','216-555-0122 · Thu 12 Nov, 16:00','Affordability review: drafted'],src:'ACC-002'},
+  {h:'Social needs',l:['Stable housing','Copay is a barrier'],src:'SOC-002'}],
+ tl:[{at:'28 Oct 18:00',t:'Call with interpreter',p:'Delays refills because of the copay.',src:'OUT-002'},{at:'18 Oct',t:'Refill paid, then reversed',p:'Adds no supply.',src:'RX-002R'},{at:'15 Oct',t:'A1c 9.6%',p:'Up from 8.1% in May.',src:'LAB-002B'},{at:'18 Sep',t:'Metformin filled',p:'30-day supply, to 17 Oct.',src:'RX-002'},{at:'1 Sep',t:'Dose increase documented',p:'Planned by the prescriber. Not a conflict.',src:'EHR-002I'},{at:'12 May',t:'A1c 8.1%',p:'Earlier result.',src:'LAB-002A'}],
+ routes:[{l:'Shlok (member) · Spanish',ph:'216-555-0102',s:'ok',n:'Tue 17:30–19:00 with an interpreter'},{l:'Dr. Quinn Lake’s office',ph:'216-555-0122',s:'ok',n:'Earlier review? Generic or 90-day supply'}],
+ pre:[{l:'Identity & plan',v:'Shlok, 58 · Commercial PPO · SYN-002',src:'MEM-002'},{l:'Language & time',v:'Spanish · 17:30–19:00',src:'OUT-002'},{l:'Latest A1c',v:'9.6% on 15 Oct',src:'LAB-002B'},{l:'Pharmacy',v:'Supply ended 17 Oct; 18 Oct refill reversed',src:'RX-002R'},{l:'PCP visit',v:'Thu 12 Nov, 16:00 · Dr. Quinn Lake',src:'ACC-002'}],
+ ask:[{l:'Metformin at home',ph:'How many days left; how he takes it'},{l:'What he pays',ph:'Copay, and what would help'},{l:'Member’s goal',ph:'In his own words'}]}
 };
+/* Source records: [dataset, source system, happened, received, fields] */
 const R={
- 'MEM-004':['Member & eligibility','Plan enrollment',[['Member','Pranav · SYN-004'],['Plan','Medicaid'],['Phone','216-555-0104 (shared)'],['Assigned RN','Maria, RN'],['Consent','Care coordination, signed 31 Oct']]],
- 'ADT-004':['Hospital ADT','HIE event feed',[['Event','Discharge'],['Time','31 Oct 2026, 11:00'],['Facility','Synthetic Lakeside Behavioral Health Unit'],['Reason','Behavioral health (details consent-gated)'],['Disposition','Home · address not confirmed']]],
- 'BH-004':['Behavioral health (consent-gated)','BH vendor',[['Follow-up due by','7 Nov 2026 (day 7)'],['Visit booked','None'],['Consent scope','Care coordination'],['Shown because','Consent on file']]],
- 'CCD-004':['Discharge summary','Hospital EHR via HIE',[['Document','Discharge summary, 31 Oct'],['Social history','Lost housing in October; staying with a friend'],['Medicines','Not included'],['Received','31 Oct, 18:10']]],
- 'SOC-004':['Social-needs screen','HRA',[['Screen date','12 Mar 2026'],['Housing','Stable'],['Food','Not asked'],['Freshness','Older than 6 months · re-ask']]],
- 'OUT-004':['Contact history','CM dialer',[['Attempt','31 Oct, 15:20'],['Outcome','Answered by roommate'],['Phone type','Shared'],['Preference','Callback requests only; no details']]],
- 'ACC-004':['Care access','BH clinic scheduling',[['Clinic','Synthetic Lakeside BH Clinic'],['Phone','216-555-0144'],['Appointment','None booked']]],
- 'MEM-001':['Member & eligibility','Plan enrollment',[['Member','Mmridul · SYN-001'],['Date of birth','18 Jun 1954'],['Plan','Medicare Advantage PPO'],['Language','English'],['Phone','216-555-0101'],['PCP','PCP-01 · Dr. Rowan Ash']]],
- 'ADT-001A':['Hospital ADT','HIE event feed',[['Event','Discharge'],['Time','30 Oct 2026, 14:00'],['Facility','Synthetic Harbor Hospital'],['Reason','Heart failure'],['Received','30 Oct, 14:05'],['Handling','Original message']]],
- 'ADT-001B':['Hospital ADT','HIE event feed',[['Event','Discharge (same event)'],['Time','30 Oct 2026, 14:00'],['Received','30 Oct, 14:07'],['Handling','Duplicate of ADT-001A · merged, no second task']]],
- 'ADT-001C':['Hospital ADT','HIE event feed',[['Event','Inpatient admission'],['Time','28 Oct 2026, 10:00'],['Facility','Synthetic Harbor Hospital'],['Reason','Heart failure']]],
- 'EHR-001A':['Clinical record','PCP EHR',[['Document','PCP medication list'],['Date','1 Oct 2026'],['Statement','Furosemide 20 mg daily'],['Status','Conflicts with the discharge summary']]],
- 'EHR-001B':['Clinical record','Hospital EHR / CCD',[['Document','Discharge summary'],['Date','30 Oct 2026, 13:30'],['Statement','Furosemide 40 mg daily'],['Dose-change reason','Not given'],['Status','Conflicts with the PCP list']]],
- 'RX-001':['Pharmacy claim','PBM paid-dispense feed',[['Drug','Furosemide 20 mg'],['Dispensed','1 Oct 2026'],['Days supply','30'],['Supply ends','30 Oct 2026'],['Status','Paid'],['Note','A fill does not prove he took it']]],
- 'LAB-001A':['Lab result','Clinical lab feed',[['Test','Potassium (LOINC 2823-3)'],['Value','4.2 mmol/L'],['Collected','30 Oct 2026, 10:00'],['Status','Final']]],
- 'LAB-001B':['Lab result','Clinical lab feed',[['Test','Creatinine (LOINC 2160-0)'],['Value','1.1 mg/dL'],['Collected','30 Oct 2026, 10:00'],['Status','Final']]],
- 'CLM-001':['Medical claim','Adjudicated claims',[['Service date','15 Sep 2026'],['Type','Office visit'],['Diagnosis','I50.9 · heart failure'],['Lag','45 days (normal)'],['Note','A missing recent claim does not mean no care']]],
- 'ACC-001':['Care access','PCP scheduling',[['Provider','Dr. Rowan Ash'],['Phone','216-555-0121'],['Appointment','5 Nov 2026, 10:00'],['Status','Confirmed'],['Transport','Needed']]],
- 'OUT-001':['Contact history','Hospital bedside check',[['Date','30 Oct 2026, 13:00'],['Phone','216-555-0101'],['Owner','Member'],['Outcome','Verified working'],['Best time','09:00–11:00']]],
- 'SOC-001':['Social-needs screen','Discharge screen',[['Date','30 Oct 2026'],['Support','Lives alone; neighbor checks in'],['Transport','Needed for PCP'],['Food / cost','No issue disclosed']]],
- 'MEM-003':['Member & eligibility','Plan enrollment',[['Member','Vraj · SYN-003'],['Plan','Medicaid'],['Phone','216-555-0103'],['PCP','Dr. Imani Cole · 216-555-0123'],['Alternate contact','None on file']]],
- 'ADT-003':['Hospital ADT','HIE event feed',[['Event','Inpatient admission'],['Time','1 Nov 2026, 21:40'],['Facility','Synthetic Riverside Hospital · 216-555-0133'],['Reason','Not provided'],['Discharge','Not yet reported']]],
- 'CLM-003':['Medical claim','Adjudicated claims',[['ED visits','14 Jul, 22 Aug, 19 Sep'],['Claims through','30 Sep 2026'],['Note','Count is “at least”; newer visits may not have arrived']]],
- 'OUT-003':['Contact history','CM dialer',[['Attempt','31 Oct 2026, 10:15'],['Phone','216-555-0103'],['Outcome','Disconnected (carrier message)'],['Action','Number blocked for dialing']]],
- 'ACC-003':['Care access','Appointment feed',[['Feed status','Unavailable'],['Last success','31 Oct 2026, 06:00'],['Shown as','Unknown, never “none”']]],
- 'MEM-005':['Member & eligibility','Plan enrollment',[['Member','Shruti · SYN-005'],['Plan','D-SNP (Medicare + Medicaid)'],['Member phone','216-555-0105'],['Authorized rep','Daughter · 216-555-0106'],['Scope','Care coordination']]],
- 'ADT-005':['Hospital ADT','HIE event feed',[['Event','Discharge'],['Time','29 Oct 2026, 12:00'],['Facility','Synthetic Harbor Hospital'],['Reason','Fall'],['Disposition','Home with home health']]],
- 'UM-005':['Prior authorization','UM system',[['Home health','Approved 29 Oct · Synthetic Home Health'],['Walker','Approved 29 Oct · Synthetic Medical Supply'],['Delivery / first visit','Not reported'],['Note','Approval is not delivery']]],
- 'OUT-005':['Contact history','CM dialer',[['Date','30 Oct 2026, 17:30'],['Spoke with','Daughter (authorized)'],['Note','“I’m stretched thin.” Asked when the walker arrives.']]],
- 'LAB-005':['Lab result','Clinical lab feed',[['Feed status','Stale'],['Last refresh','30 Oct 2026, 16:00'],['Shown as','Dated results only']]],
- 'SOC-005':['Social-needs screen','Discharge screen',[['Date','29 Oct 2026'],['Support','Lives alone; daughter visits evenings'],['Transport','Daughter drives']]],
- 'MEM-002':['Member & eligibility','Plan enrollment',[['Member','Shlok · SYN-002'],['Plan','Commercial'],['Language','Spanish'],['Phone','216-555-0102 (mobile)']]],
- 'LAB-002A':['Lab result','Clinical lab feed',[['Test','HbA1c (LOINC 4548-4)'],['Value','8.1%'],['Collected','12 May 2026'],['Status','Final']]],
- 'LAB-002B':['Lab result','Clinical lab feed',[['Test','HbA1c (LOINC 4548-4)'],['Value','9.6%'],['Collected','15 Oct 2026'],['Status','Final']]],
- 'RX-002':['Pharmacy claim','PBM transaction ledger',[['Drug','Metformin'],['Transaction','Paid, then reversed'],['Estimated gap','~15 days past recorded supply'],['Assumptions','No cash or outside fills; verify with member'],['Note','“No fill seen” ≠ “not taking”']]],
- 'OUT-002':['Contact history','CM dialer',[['Language','Spanish (interpreter)'],['Best time','17:30–19:00'],['Note','Said copays are hard to manage']]],
- 'SOC-002':['Social-needs screen','HRA',[['Cost of medicines','Concern'],['Work','Works days']]]
+'MEM-001':['Member & eligibility','Plan enrollment','1 Nov 22:00','2 Nov 05:00',[['Member','Mmridul · SYN-001'],['Date of birth','18 Jun 1954'],['Plan','Medicare Advantage PPO · active'],['Language','English'],['Phone','216-555-0101']]],
+'MEM-002':['Member & eligibility','Plan enrollment','1 Nov 22:00','2 Nov 05:00',[['Member','Shlok · SYN-002'],['Date of birth','2 Mar 1968'],['Plan','Commercial PPO · active'],['Language','Spanish'],['Phone','216-555-0102']]],
+'MEM-003':['Member & eligibility','Plan enrollment','1 Nov 22:00','2 Nov 05:00',[['Member','Vraj · SYN-003'],['Date of birth','11 Aug 1982'],['Plan','Medicaid managed care · active'],['Language','English'],['Phone','216-555-0103']]],
+'MEM-004':['Member & eligibility','Plan enrollment','1 Nov 22:00','2 Nov 05:00',[['Member','Pranav · SYN-004'],['Date of birth','23 Apr 1990'],['Plan','Medicaid managed care · active'],['Language','English'],['Phone','216-555-0104']]],
+'MEM-005':['Member & eligibility','Plan enrollment','1 Nov 22:00','2 Nov 05:00',[['Member','Shruti · SYN-005'],['Date of birth','8 Jan 1945'],['Plan','Medicare Advantage D-SNP · active'],['Language','English'],['Phone','216-555-0105']]],
+'ADT-001A':['Hospital ADT','HIE event feed','30 Oct 14:00','30 Oct 14:05',[['Event','Discharge'],['Facility','Synthetic Harbor Hospital'],['Reason','Heart failure'],['Disposition','Home; confirm support'],['Handling','Original message']]],
+'ADT-001B':['Hospital ADT','HIE event feed','30 Oct 14:00','30 Oct 14:07',[['Event','Discharge (same event)'],['Handling','Duplicate of ADT-001A · merged, no second task']]],
+'ADT-001C':['Hospital ADT','HIE event feed','28 Oct 10:00','28 Oct 10:08',[['Event','Inpatient admission'],['Facility','Synthetic Harbor Hospital'],['Reason','Heart failure']]],
+'ADT-003A':['Hospital ADT','HIE event feed','29 Sep 18:00','29 Sep 18:05',[['Event','ED discharge'],['Facility','Synthetic Elm Emergency'],['Reason','Asthma symptoms']]],
+'ADT-003B':['Hospital ADT','HIE event feed','12 Oct 21:00','12 Oct 21:08',[['Event','ED discharge'],['Facility','Synthetic Elm Emergency'],['Reason','Wheezing']]],
+'ADT-003C':['Hospital ADT','HIE event feed','30 Oct 20:00','1 Nov 08:00',[['Event','ED discharge'],['Facility','Synthetic Elm Emergency'],['Reason','Not supplied (diagnosis missing)'],['Arrival delay','37 hours, across the daylight-saving change']]],
+'ADT-003D':['Hospital ADT','HIE event feed','1 Nov 19:00','1 Nov 19:12',[['Event','Inpatient admission'],['Facility','Synthetic Elm Hospital'],['Reason','Not supplied'],['Discharge','No discharge message yet'],['Facility team','216-555-0133']]],
+'ADT-004':['Hospital ADT','HIE event feed','31 Oct 11:00','31 Oct 11:06',[['Event','Discharge'],['Facility','Synthetic Willow Crisis Unit'],['Reason','Behavioral-health episode'],['Disposition','Home; confirm support']]],
+'ADT-005':['Hospital ADT','HIE event feed','29 Oct 11:00','29 Oct 11:04',[['Event','Discharge'],['Facility','Synthetic Harbor Hospital'],['Reason','Fall; deconditioning'],['Disposition','Home; confirm support']]],
+'CLM-001':['Medical claim','Adjudicated claims','15 Sep','30 Oct',[['Type','Office visit'],['Diagnosis','I50.9 · heart failure'],['Lag','45 days (normal)'],['Note','No recent claim does not mean no recent care']]],
+'CLM-003':['Medical claim','Adjudicated claims','15 Aug','29 Sep',[['Type','ED visit'],['Diagnosis','J45.909 · asthma'],['Lag','45 days'],['Note','Visits since then are not billed yet']]],
+'CLM-004':['Medical claim','Adjudicated claims','1 Oct','25 Oct',[['Type','Outpatient visit'],['Diagnosis','F32.A · depression'],['Lag','24 days']]],
+'RX-001':['Pharmacy','PBM paid-dispense feed','1 Oct','1 Oct',[['Drug','Furosemide 20 mg · daily'],['Days supply','30'],['Supply ends','30 Oct'],['Status','Paid'],['Note','A fill does not prove he took it']]],
+'RX-002':['Pharmacy','PBM paid-dispense feed','18 Sep','18 Sep',[['Drug','Metformin ER 500 mg · two tablets with evening meal'],['Days supply','30 (quantity 60)'],['Supply ends','17 Oct'],['Uncovered days before 2 Nov','15 (estimate)'],['Status','Paid']]],
+'RX-002P':['Pharmacy','PBM transaction ledger','18 Oct 12:00','18 Oct',[['Drug','Metformin ER 500 mg'],['Status','Paid'],['Handling','Excluded: reversed later the same day by RX-002R']]],
+'RX-002R':['Pharmacy','PBM transaction ledger','18 Oct 18:00','18 Oct',[['Drug','Metformin ER 500 mg'],['Status','Reversed'],['Effect','Cancels RX-002P; no supply added'],['Note','Not evidence the medicine was obtained']]],
+'RX-003':['Pharmacy','PBM paid-dispense feed','10 Oct','10 Oct',[['Drug','Albuterol inhaler 90 mcg · as needed'],['Days supply','30'],['Status','Paid']]],
+'RX-004':['Pharmacy','PBM paid-dispense feed','12 Oct','12 Oct',[['Drug','Sertraline 50 mg · daily'],['Days supply','30'],['Supply ends','10 Nov'],['Status','Paid']]],
+'RX-005':['Pharmacy','PBM paid-dispense feed','20 Oct','20 Oct',[['Drug','Amlodipine 5 mg · daily'],['Days supply','30'],['Early refill overlap','3 days'],['Note','Overlap is not an adherence claim']]],
+'EHR-001A':['Clinical record','PCP EHR','1 Oct','1 Oct',[['Document','PCP medication list'],['Statement','Furosemide 20 mg daily'],['Status','Conflicts with the discharge summary']]],
+'EHR-001B':['Clinical record','Hospital EHR / CCD','30 Oct 13:30','31 Oct 07:00',[['Document','Discharge summary'],['Statement','Furosemide 40 mg daily'],['Reason for change','Not given'],['Status','Conflicts with the PCP list']]],
+'EHR-002I':['Clinical record','PCP EHR','1 Sep','1 Sep',[['Document','Documented medication update'],['Change','Metformin ER: one tablet daily → two tablets with evening meal'],['Rationale','Planned prescriber-directed increase'],['Handling','Intentional change: not a conflict']]],
+'EHR-003':['Clinical record','Hospital EHR / CCD','12 Oct 20:30','13 Oct',[['Document','ED summary'],['Condition','Asthma'],['Medicine','Albuterol inhaler per label'],['Note','Describes the 12 Oct visit, not 30 Oct']]],
+'EHR-004':['Clinical record','Hospital EHR / CCD','31 Oct 09:00','31 Oct',[['Document','Discharge care summary'],['Conditions','Depression; anxiety'],['Medicine','Sertraline 50 mg daily'],['Safety','Earlier screen copied forward; current safety unknown']]],
+'EHR-005':['Clinical record','Hospital EHR / CCD','29 Oct 09:00','29 Oct',[['Document','Discharge summary'],['Condition','Fall; deconditioning'],['Function','Needs help with transfers'],['Orders','Home health and walker']]],
+'LAB-001A':['Lab result','Clinical lab feed','30 Oct 10:00','30 Oct 16:00',[['Test','Potassium (LOINC 2823-3)'],['Value','4.2 mmol/L'],['Status','Final']]],
+'LAB-001B':['Lab result','Clinical lab feed','30 Oct 10:00','30 Oct 16:00',[['Test','Creatinine (LOINC 2160-0)'],['Value','1.1 mg/dL'],['Status','Final']]],
+'LAB-002A':['Lab result','Clinical lab feed','12 May','12 May',[['Test','HbA1c (LOINC 4548-4)'],['Value','8.1%'],['Status','Final']]],
+'LAB-002B':['Lab result','Clinical lab feed','15 Oct','15 Oct',[['Test','HbA1c (LOINC 4548-4)'],['Value','9.6%'],['Status','Final']]],
+'LAB-005':['Lab result','Clinical lab feed','28 Oct','28 Oct',[['Test','Hemoglobin (LOINC 718-7)'],['Value','11.8 g/dL'],['Feed','Stale: no refresh since 30 Oct']]],
+'OUT-001':['Contact history','Hospital bedside check','30 Oct 13:00','30 Oct 13:15',[['Phone','216-555-0101 · member'],['Outcome','Verified working'],['Best time','09:00–11:00'],['Note','No post-discharge RN call yet']]],
+'OUT-002':['Contact history','RN call with interpreter','28 Oct 18:00','28 Oct 18:15',[['Phone','216-555-0102 · member'],['Outcome','Connected'],['Language','Spanish'],['Best time','17:30–19:00'],['Note','Delays refills because of the copay']]],
+'OUT-003A':['Contact history','RN call attempt','21 Oct 10:00','21 Oct',[['Phone','216-555-0103'],['Outcome','Disconnected'],['Action','Stop calls and texts to this number']]],
+'OUT-003B':['Contact history','Old auto-dialer','26 Oct 10:00','26 Oct',[['Phone','216-555-0103'],['Outcome','Disconnected again'],['Note','The old workflow retried a known bad number']]],
+'OUT-004':['Contact history','Social-work contact check','31 Oct 10:00','31 Oct',[['Phone','216-555-0104 · shelter reception (shared)'],['Outcome','Callback arrangement confirmed'],['Best time','09:00–11:00'],['Rule','Neutral callback request only']]],
+'OUT-005A':['Contact history','Consent confirmation','29 Oct 10:00','29 Oct',[['Phone','216-555-0106 · Riya (daughter)'],['Consent','Shruti authorized Riya for care coordination'],['Recorded by','Discharge RN']]],
+'OUT-005B':['Contact history','Caregiver inbound call','30 Oct 10:00','30 Oct',[['Caller','Riya (authorized daughter)'],['Note','Can’t manage transfers alone; first home visit not confirmed']]],
+'SOC-001':['Social needs','Discharge screen','30 Oct 12:00','30 Oct',[['Support','Lives alone; neighbor checks in'],['Transport','Needed for PCP'],['Food / cost','No issue disclosed']]],
+'SOC-002':['Social needs','RN call','28 Oct 18:00','28 Oct',[['Housing','Stable'],['Cost','Medication copay barrier']]],
+'SOC-003':['Social needs','Health risk assessment','1 May','1 May',[['Housing','Current residence unverified'],['Transport','Sometimes unavailable'],['Freshness','Older than 6 months: re-screen']]],
+'SOC-004A':['Social needs','Health risk assessment','15 Apr','15 Apr',[['Housing','Stable rented room'],['Freshness','Out of date; contradicted by SOC-004B']]],
+'SOC-004B':['Social needs','Social-work screen','30 Oct 16:00','30 Oct',[['Housing','Lost housing; shelter placement'],['Transport','Needs clinic transport'],['Food','Food support requested']]],
+'SOC-005A':['Social needs','Health risk assessment','10 Feb','10 Feb',[['Living','Lives independently'],['Freshness','Out of date; contradicted by SOC-005B']]],
+'SOC-005B':['Social needs','Caregiver report','30 Oct 10:00','30 Oct',[['Living','Daughter assisting temporarily'],['Mobility','Cannot transfer independently']]],
+'ACC-001':['Care access','PCP scheduling','30 Oct 15:00','30 Oct',[['Provider','Dr. Rowan Ash · 216-555-0121'],['Appointment','Thu 5 Nov, 10:00 · confirmed'],['Barrier','Transport still to arrange']]],
+'ACC-002':['Care access','PCP scheduling','15 Oct','15 Oct',[['Provider','Dr. Quinn Lake · 216-555-0122'],['Appointment','Thu 12 Nov, 16:00 · confirmed']]],
+'ACC-003':['Care access','Scheduling feed status','31 Oct 06:00','31 Oct',[['Provider','Dr. Ellis Fern · 216-555-0123'],['Feed','Down since 31 Oct, 06:00'],['Appointment','Unknown (never shown as “none”)']]],
+'ACC-004':['Care access','PCP scheduling','31 Oct 10:00','31 Oct',[['Provider','Willow Community Clinic · 216-555-0124'],['Appointment','Tue 3 Nov, 10:30 · confirmed'],['Type','PCP visit (not a mental-health provider visit)']]],
+'ACC-005':['Care access','PCP scheduling','29 Oct 15:00','29 Oct',[['Provider','Dr. Sage Elm · 216-555-0125'],['Appointment','Wed 4 Nov, 11:00 · confirmed'],['Barrier','Accessible transport and caregiver availability']]],
+'SVC-001':['Services & authorizations','Plan UM / referral log','30 Oct 16:00','30 Oct',[['Service','Non-emergency transport'],['Status','Not yet requested'],['For','5 Nov PCP visit']]],
+'SVC-002':['Services & authorizations','Plan UM / referral log','28 Oct 18:30','28 Oct',[['Service','Pharmacy affordability review'],['Status','Referral drafted · not yet reviewed']]],
+'SVC-004':['Services & authorizations','Plan UM / referral log','31 Oct 10:00','31 Oct',[['Service','Housing navigation'],['Status','Referral accepted'],['Delivery','Social worker assigned; placement unconfirmed']]],
+'SVC-005A':['Services & authorizations','Plan UM / referral log','30 Oct 09:00','30 Oct',[['Service','Home-health nursing / therapy'],['Status','Authorized'],['Delivery','First visit unconfirmed']]],
+'SVC-005B':['Services & authorizations','Plan UM / referral log','30 Oct 09:30','30 Oct',[['Service','Walker (durable medical equipment)'],['Status','Authorized'],['Delivery','Pending confirmation']]]
 };
 const ST={ok:['✓','Confirmed'],single:['◐','Single source'],conflict:['⚠','Conflict'],unknown:['?','Unknown']};
-const FR={fresh:'Fresh',lag:'Normal lag',stale:'Stale',down:'Feed down',missing:'Not received'};
-const OUT={prep:'Preparation only',connected:'Connected',noanswer:'No answer',voicemail:'Left voicemail',callback:'Neutral callback request left'};
+const FR={fresh:'Fresh',lag:'Normal lag',stale:'Stale',down:'Feed down',missing:'Not found'};
+const OUTC={prep:'Preparation only',connected:'Connected',noanswer:'No answer',voicemail:'Left voicemail',callback:'Callback request left'};
+const OUTX={prep:'Preparation only. No successful contact documented.',noanswer:'Attempted; no answer. No assessment completed.',voicemail:'Voicemail left with a callback number only. No clinical details.',callback:'Neutral callback request left. No clinical details shared.'};
+const TOUR=[
+ {go:'#queue',sel:'pranav',el:'#qlist',t:'08:00 · Maria’s day starts here',x:'The work queue ranks every member by urgency, deadline, barriers and new events. Four of five need her today.'},
+ {go:'#queue',sel:'pranav',el:'#pane',t:'Every score explains itself',x:'Pranav is first. The bars show where his 100 points come from, and the tie rule explains why he goes before Mmridul. Try Accept or Dismiss on an action.'},
+ {go:'#member-mmridul',el:'#banner',t:'Member 360: the conflict comes first',x:'Before, Maria found this dose conflict at 09:40 on her fourth screen. Now it is the first thing she sees, with both sources side by side.'},
+ {go:'#member-mmridul',el:'#brief',t:'AI brief, every line linked',x:'Three lines summarise what changed. Tap any record ID, like EHR-001B, to see the original source.'},
+ {go:'#outreach-vraj',el:'#routes',t:'The dead number is blocked',x:'Vraj’s phone is disconnected, so it cannot be selected. The workbench points Maria to the hospital first.'},
+ {go:'#outreach-shruti',el:'#notecard',t:'The note writes itself from what she enters',x:'Choose Connected, confirm a field or type an answer, and watch the draft update. Then Review and sign.'},
+ {go:null,el:'#toggles',t:'When data breaks, the workbench says so',x:'Turn on “Pharmacy feed down” or “Pause AI assist”, then open Mmridul. Missing data shows as unknown, never as no.'}
+];
 
-/* ---------------- State ---------------- */
+/* ================= State ================= */
 let S;
-function fresh(){return {filter:'now',q:'',sel:'pranav',cur:'mmridul',ai:true,pbm:true,acts:{},sess:{}};}
+const fresh=()=>({filter:'now',q:'',sel:'pranav',cur:'mmridul',ai:true,pbm:true,view:{},explain:false,acts:{},sess:{},tour:-1});
 S=fresh();
-function sess(p){if(!S.sess[p.key]){const r=p.defaultRoute||0;S.sess[p.key]={route:r,outcome:'prep',conf:{},ans:{},findings:'',manual:'',review:false,signed:false,ack:false,receipt:''};}return S.sess[p.key];}
-function acts(p){if(!S.acts[p.key])S.acts[p.key]=p.actions.map(a=>({s:'open',t:a.t,reason:''}));return S.acts[p.key];}
+const acts=p=>S.acts[p.key]||(S.acts[p.key]=p.actions.map(a=>({s:'open',t:a.t,r:''})));
+const sess=p=>S.sess[p.key]||(S.sess[p.key]={route:p.dr||0,out:'prep',conf:{},ans:{},find:'',manual:'',review:false,signed:false,ack:false,rcpt:''});
 
-/* ---------------- Helpers ---------------- */
+/* ================= Helpers ================= */
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const total=p=>p.score.u+p.score.d+p.score.b+p.score.n;
-const scCls=n=>n>=100?'sc-hi':n>=80?'sc-md':'sc-lo';
+const tot=p=>p.score.u+p.score.d+p.score.b+p.score.n;
+const sc=n=>n>=100?'sc-hi':n>=80?'sc-md':'sc-lo';
 const src=id=>`<button type="button" class="src" data-src="${id}" aria-label="Open source record ${id}">${id}</button>`;
 const st=k=>`<span class="st st-${k}"><b aria-hidden="true">${ST[k][0]}</b>${ST[k][1]}</span>`;
 const fr=k=>`<span class="fr fr-${k}">${FR[k]}</span>`;
-const av=(p,lg)=>`<span class="avatar av-${p.av}${lg?' av-lg':''}" aria-hidden="true">${p.name[0]}</span>`;
-function toast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('show'),2600);}
-function route(){const h=location.hash.replace('#','');let m=h.match(/^(member|outreach)-([a-z]+)$/);if(m&&P[m[2]])return {v:m[1],p:P[m[2]]};return {v:'queue'};}
-function pbmDown(item){return !S.pbm&&item.pbm;}
+const av=(p,lg)=>`<span class="av av-${p.lvl}${lg?' lg':''}" aria-hidden="true">${p.name[0]}</span>`;
+const down=x=>!S.pbm&&x.pbm;
+function toast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>el.classList.remove('show'),2600);}
+function route(){const m=location.hash.slice(1).match(/^(member|outreach)-([a-z]+)$/);return m&&P[m[2]]?{v:m[1],p:P[m[2]]}:{v:'queue'};}
 
-/* ---------------- Chrome ---------------- */
-function chrome(r){
- const cur=r.v==='queue'?P[S.sel]:P[S.cur];
- document.getElementById('steps').innerHTML=
-  `<a class="step${r.v==='queue'?' on':''}" href="#queue"${r.v==='queue'?' aria-current="page"':''}><small class="t-decide">DECIDE</small>Work queue</a>`+
-  `<a class="step${r.v==='member'?' on':''}" href="#member-${cur.key}"${r.v==='member'?' aria-current="page"':''}><small class="t-know">KNOW</small>Member 360 <span class="who-ctx">· ${cur.name}</span></a>`+
-  `<a class="step${r.v==='outreach'?' on':''}" href="#outreach-${cur.key}"${r.v==='outreach'?' aria-current="page"':''}><small class="t-do">DO</small>Outreach &amp; note <span class="who-ctx">· ${cur.name}</span></a>`;
- const h=location.hash||'#queue';
- const stops=[['#queue','08:00','Queue: who’s first'],['#member-mmridul','09:40 → 08:00','Mmridul’s dose conflict'],['#outreach-vraj','11:00','Vraj: dead number'],['#outreach-shruti','12:00','Shruti: approved ≠ delivered']];
- document.getElementById('tour').innerHTML=`<b>Walk Maria’s Monday:</b>`+stops.map(([href,t,l])=>`<a href="${href}" class="${h===href?'on':''}"><span>${t}</span>${l}</a>`).join('');
+/* ================= Tabs ================= */
+function tabs(r){
+ const c=r.v==='queue'?P[S.sel]:P[S.cur];
+ const t=(v,href,tag,label,ctx)=>`<a class="tab${r.v===v?' on':''}" href="${href}"${r.v===v?' aria-current="page"':''}><span class="tag tag-${tag}">${tag.toUpperCase()}</span>${label}${ctx?` <span class="ctx">· ${ctx}</span>`:''}</a>`;
+ document.getElementById('tabs').innerHTML=t('queue','#queue','decide','Work queue')+t('member','#member-'+c.key,'know','Member 360',c.name)+t('outreach','#outreach-'+c.key,'do','Call & note',c.name);
 }
 
-/* ---------------- Screen 1: queue ---------------- */
-function filtered(){
- const q=S.q.trim().toLowerCase();
- return ORDER.map(k=>P[k]).filter(p=>{
-  const f=S.filter;
-  const okF=f==='all'||(f==='now'&&p.dueToday)||(f==='scheduled'&&!p.dueToday)||p.tags.includes(f);
-  const okQ=!q||[p.name,p.id,p.cond,p.plan,p.why].join(' ').toLowerCase().includes(q);
-  return okF&&okQ;
- });
-}
+/* ================= Screen 1: Work queue ================= */
+function list(){const q=S.q.trim().toLowerCase();return ORDER.map(k=>P[k]).filter(p=>{const f=S.filter;const okF=f==='all'||(f==='now'&&p.today)||(f==='scheduled'&&!p.today)||p.tags.includes(f);return okF&&(!q||[p.name,p.id,p.cond,p.plan,p.why].join(' ').toLowerCase().includes(q));});}
 function vQueue(){
- const list=filtered();
- if(!list.find(p=>p.key===S.sel)&&list.length)S.sel=list[0].key;
- const cnt={now:4,barriers:2,meds:2,scheduled:1,all:5};
- const chips=[['now','Work now'],['barriers','Contact barriers'],['meds','Medication'],['scheduled','Scheduled'],['all','All']];
- const rows=list.length?list.map(p=>`<button type="button" class="qrow" data-sel="${p.key}" aria-pressed="${p.key===S.sel}">
-   <span class="score ${scCls(total(p))}">${total(p)}</span>
-   <span class="qname">${av(p)}<span><strong>${p.name}, ${p.age}</strong><small>${p.plan} · ${p.id}</small></span></span>
-   <span class="qwhy${p.warn?' warn':''}">${esc(p.why)}<small>${esc(p.whySub)}</small></span>
-   <span class="qdue">${p.due}<small>${p.dueLabel}</small></span></button>`).join(''):`<div class="empty">No members match. <button type="button" class="btn sm" data-act="clear">Clear filters</button></div>`;
- const p=P[S.sel];
- return `<div class="head"><div><div class="eyebrow"><small class="st t-decide" style="border:0">DECIDE</small> Prioritized work queue</div><h1>Good morning, Maria. 4 members need you today.</h1><p>Ranked by urgency, deadline, barriers and new events. Select a member to see why they are where they are, and what to do first.</p></div></div>
- <div class="tiles">
-  <div class="tile"><div class="n">5</div><div class="l">members in this demo</div></div>
-  <div class="tile hot"><div class="n">4</div><div class="l">due today</div></div>
-  <div class="tile"><div class="n">0</div><div class="l">overdue at 08:00</div></div>
-  <div class="tile"><div class="n">5 → 4</div><div class="l">ADT messages → events (1 duplicate merged)</div></div>
- </div>
- <div class="qgrid">
-  <section class="card" aria-label="Work queue">
-   <div class="tools"><div class="chips" role="group" aria-label="Filter">${chips.map(([k,l])=>`<button type="button" class="chip${S.filter===k?' on':''}" data-filter="${k}" aria-pressed="${S.filter===k}">${l}<span>${cnt[k]}</span></button>`).join('')}</div>
-   <label class="search" for="q"><span aria-hidden="true">⌕</span><input id="q" type="search" placeholder="Search name, ID or condition" value="${esc(S.q)}"></label></div>
-   <div class="qhead" aria-hidden="true"><span>Score</span><span>Member</span><span>Why now</span><span style="text-align:right">Due</span></div>
-   ${rows}
-  </section>
-  ${list.length?pane(p):''}
- </div>`;
+ const L=list();if(L.length&&!L.find(p=>p.key===S.sel))S.sel=L[0].key;
+ const n={now:4,barriers:2,meds:2,scheduled:1,all:5};
+ const chips=[['now','Work now'],['barriers','Contact barriers'],['meds','Medication'],['scheduled','Later this week'],['all','All']];
+ const rows=L.length?L.map(p=>`<button type="button" class="qrow" data-sel="${p.key}" aria-pressed="${p.key===S.sel}"><span class="score ${sc(tot(p))}">${tot(p)}</span><span class="qn">${av(p)}<span><strong>${p.name}, ${p.age}</strong><small>${p.plan}</small></span></span><span class="qw${p.warn?' warn':''}">${esc(p.why)}<small>${esc(p.whyS)}</small></span><span class="qd">${p.due}<small>${p.dueL}</small></span></button>`).join(''):`<div class="empty">No members match.<br><button type="button" class="btn sm" data-act="clear" style="margin-top:8px">Clear search and filters</button></div>`;
+ return `<div class="head"><div><div class="kicker"><span class="tag tag-decide">DECIDE</span>Who needs Maria first</div><h1>Good morning, Maria. 4 members need you today.</h1><p>Ranked by urgency, deadline, barriers and new events. Select a member to see why they are where they are, and what to do first.</p></div></div>
+ <div class="tiles"><div class="tile"><span class="n">5</span><span class="l">members in this demo</span></div><div class="tile hot"><span class="n">4</span><span class="l">due today</span></div><div class="tile k"><span class="n">0</span><span class="l">overdue at 08:00</span></div><div class="tile v"><span class="n tnum">5→4</span><span class="l">hospital alerts → events (1 duplicate merged)</span></div></div>
+ <div class="qgrid"><section class="card" id="qlist" aria-label="Work queue">
+  <div class="tools"><div class="chips" role="group" aria-label="Filter">${chips.map(([k,l])=>`<button type="button" class="chip${S.filter===k?' on':''}" data-filter="${k}" aria-pressed="${S.filter===k}">${l}<span>${n[k]}</span></button>`).join('')}</div><label class="search" for="q"><span aria-hidden="true">⌕</span><input id="q" type="search" placeholder="Search name or condition" value="${esc(S.q)}" autocomplete="off"></label></div>
+  <div class="qhead" aria-hidden="true"><span>Score</span><span>Member</span><span>Why now</span><span style="text-align:right">Due</span></div>${rows}</section>
+  ${L.length?pane(P[S.sel]):''}</div>`;
 }
 function pane(p){
- const s=p.score,rank=ORDER.indexOf(p.key)+1;
- const bar=(l,v,m,k)=>`<div class="barl"><span>${l}</span><div class="tr" role="img" aria-label="${l} ${v} of ${m}"><div class="fi" style="width:${v/m*100}%"></div></div><b>${v} / ${m}</b></div>`;
- const a=acts(p);
- return `<aside class="card pane" aria-label="Why ${p.name} is ranked here">
-  <div class="pane-top">${av(p,true)}<div><h2>${p.name}, ${p.age}</h2><div class="sub">${p.plan} · ${p.cond} · owner Maria, RN</div></div><span class="score ${scCls(total(p))}" style="margin-left:auto">${total(p)}</span></div>
-  <div class="card-b">
-   <div class="sec-t" style="margin-top:4px">Why #${rank} · score ${total(p)} of 100</div>
-   <div class="bars">${bar('Urgency',s.u,40)}${bar('Deadline',s.d,30)}${bar('Barriers',s.b,20)}${bar('New event',s.n,10)}</div>
-   <ul class="why-list"><li><b>Urgency:</b> ${esc(p.scoreWhy.u)}</li><li><b>Deadline:</b> ${esc(p.scoreWhy.d)}</li><li><b>Barriers:</b> ${esc(p.scoreWhy.b)}</li><li><b>New event:</b> ${esc(p.scoreWhy.n)}</li></ul>
-   ${p.tie?`<div class="note-box">${esc(p.tie)}</div>`:''}
-   <div class="sec-t">Next actions · at most 3</div>
-   <div class="acts">${a.map((x,i)=>actCard(p,x,i)).join('')}</div>
-   <div class="btnrow" style="margin-top:14px"><a class="btn" href="#member-${p.key}">Open member 360</a><a class="btn primary" href="#outreach-${p.key}">Start outreach</a></div>
-   <p class="hint" style="margin:10px 0 0">Rules, not a black box: every point is explained, and the medical director signs off the weights. Dismissals feed back into tuning.</p>
-  </div></aside>`;
+ const s=p.score,rank=ORDER.indexOf(p.key)+1,a=acts(p);
+ const bar=(l,v,m)=>`<div class="bl"><span>${l}</span><div class="tr" role="img" aria-label="${l}: ${v} of ${m}"><div class="fi" style="width:${v/m*100}%"></div></div><b>${v} / ${m}</b></div>`;
+ return `<aside class="card pane" id="pane" aria-label="Why ${p.name} is ranked here"><div class="ch navy"><div class="ptop">${av(p,true)}<div><h2>${p.name}, ${p.age}</h2><div class="sub">${p.plan} · ${p.cond}</div></div></div><span class="score ${sc(tot(p))}">${tot(p)}</span></div>
+ <div class="cb"><div class="sect" style="margin-top:0">Why #${rank} · ${tot(p)} of 100 points</div><div class="bars">${bar('Urgency',s.u,40)}${bar('Deadline',s.d,30)}${bar('Barriers',s.b,20)}${bar('New event',s.n,10)}</div>
+ <ul class="why"><li><b>Urgency:</b> ${esc(p.sw.u)}</li><li><b>Deadline:</b> ${esc(p.sw.d)}</li><li><b>Barriers:</b> ${esc(p.sw.b)}</li><li><b>New event:</b> ${esc(p.sw.n)}</li></ul>${p.tie?`<div class="tie">${esc(p.tie)}</div>`:''}
+ <div class="sect">Next actions · at most 3</div><div class="acts">${a.map((x,i)=>act(p,x,i)).join('')}</div>
+ <div class="row" style="margin-top:14px"><a class="btn" href="#member-${p.key}">Open Member 360</a><a class="btn primary" href="#outreach-${p.key}">Start the call →</a></div>
+ <p class="hint" style="margin:10px 0 0">Rules, not a black box. The medical director signs off the weights, and dismiss reasons are used to tune them.</p></div></aside>`;
 }
-function actCard(p,x,i){
+function act(p,x,i){
  const d=p.actions[i].d;
- if(x.s==='accepted')return `<div class="act accepted"><div class="act-t">${esc(x.t)}</div><div class="act-d">${esc(d)}</div><div class="act-s">✓ Accepted · task owned by Maria, due ${p.due} ${p.dueLabel.toLowerCase()}</div><div class="btnrow"><button type="button" class="btn sm" data-undo="${i}">Undo</button></div></div>`;
- if(x.s==='dismissed')return `<div class="act dismissed"><div class="act-t">${esc(x.t)}</div><div class="act-s">Dismissed · reason: ${esc(x.reason)}</div><div class="btnrow"><button type="button" class="btn sm" data-undo="${i}">Undo</button></div></div>`;
- if(x.s==='editing')return `<div class="act"><label class="flabel" for="edit-${p.key}-${i}">Edit action</label><input id="edit-${p.key}-${i}" value="${esc(x.t)}"><div class="btnrow"><button type="button" class="btn sm primary" data-save="${i}">Save</button><button type="button" class="btn sm" data-undo="${i}">Cancel</button></div></div>`;
- if(x.s==='dismissing')return `<div class="act"><div class="act-t">${esc(x.t)}</div><div class="act-d">Why dismiss? Your reason retunes the rules.</div><div class="reasons">${['Already done','Not clinically appropriate','Data looks wrong','Member declined'].map(r=>`<button type="button" class="chip" data-reason="${i}" data-r="${r}">${r}</button>`).join('')}</div><div class="btnrow"><button type="button" class="btn sm" data-undo="${i}">Cancel</button></div></div>`;
- return `<div class="act"><div class="act-t">${esc(x.t)}</div><div class="act-d">${esc(d)}</div><div class="btnrow"><button type="button" class="btn sm primary" data-accept="${i}">Accept</button><button type="button" class="btn sm" data-edit="${i}">Edit</button><button type="button" class="btn sm" data-dismiss="${i}">Dismiss</button></div></div>`;
+ if(x.s==='ok')return `<div class="act ok"><div class="act-t">${esc(x.t)}</div><div class="act-s">✓ Added to Maria’s tasks · due ${p.due} ${p.dueL.toLowerCase()}</div><div class="row"><button type="button" class="btn sm" data-undo="${i}">Undo</button></div></div>`;
+ if(x.s==='no')return `<div class="act no"><div class="act-t">${esc(x.t)}</div><div class="act-s">Dismissed · ${esc(x.r)}</div><div class="row"><button type="button" class="btn sm" data-undo="${i}">Undo</button></div></div>`;
+ if(x.s==='edit')return `<div class="act"><label class="act-t" for="ed-${i}">Edit this action</label><input id="ed-${i}" value="${esc(x.t)}"><div class="row"><button type="button" class="btn sm primary" data-save="${i}">Save and accept</button><button type="button" class="btn sm" data-undo="${i}">Cancel</button></div></div>`;
+ if(x.s==='why')return `<div class="act"><div class="act-t">${esc(x.t)}</div><div class="act-d">Why dismiss it? The reason helps tune the rules.</div><div class="row">${['Already done','Not right for this member','Data looks wrong','Member declined'].map(r=>`<button type="button" class="btn sm" data-reason="${i}" data-r="${r}">${r}</button>`).join('')}<button type="button" class="btn sm" data-undo="${i}">Cancel</button></div></div>`;
+ return `<div class="act"><div class="act-t">${esc(x.t)}</div><div class="act-d">${esc(d)}</div><div class="row"><button type="button" class="btn sm primary" data-accept="${i}">Accept</button><button type="button" class="btn sm" data-edit="${i}">Edit</button><button type="button" class="btn sm" data-dismiss="${i}">Dismiss</button></div></div>`;
 }
 
-/* ---------------- Screen 2: member 360 ---------------- */
-function mHead(p,back){
- return `<a class="back" href="${back}">← ${back==='#queue'?'Back to work queue':'Back to member 360'}</a>
- <section class="card mhead"><div class="mid">${av(p,true)}<div><h1>${p.name}, ${p.age}</h1><p>${p.id} · ${p.plan} · ${p.cond} · owner Maria, RN</p>
- <div class="mmeta"><span class="score ${scCls(total(p))}">${total(p)}</span><span class="pill">Due ${p.dueLabel.toLowerCase()} ${p.due} ET</span><span class="pill">${p.dueToday?'Work now':'Scheduled'}</span></div></div></div>
- ${back==='#queue'?`<a class="btn primary" href="#outreach-${p.key}">Start outreach →</a>`:''}</section>`;
+/* ================= Screen 2: Member 360 ================= */
+function head(p,back){
+ return `<a class="back" href="${back}">← ${back==='#queue'?'Back to work queue':'Back to Member 360'}</a>
+ <section class="card mhead"><div class="mid">${av(p,true)}<div><h1>${p.name}, ${p.age}</h1><p>${p.id} · ${p.plan} · ${p.cond} · ${esc(p.owner)}</p><div class="mmeta"><span class="score ${sc(tot(p))}">${tot(p)}</span><span class="pill">Due ${p.dueL.toLowerCase()} ${p.due} ET</span></div></div></div>${back==='#queue'?`<a class="btn primary" href="#outreach-${p.key}">Start the call →</a>`:''}</section>`;
 }
 function vMember(p){
- const b=p.banner,bt=(!S.pbm&&b.textDown)?b.textDown:b.text;
- const brief=S.ai?`<ol class="brief">${p.brief.map((l,i)=>{const down=pbmDown(l);return `<li><span class="num">${i+1}</span><div>${esc(down?l.tDown:l.t)}<div class="meta">${down?st('unknown')+fr('down'):st(l.st)+src(l.src)}</div></div></li>`;}).join('')}</ol>`:`<div class="paused"><strong>AI summary is paused.</strong> Every sourced fact below is unchanged. Read the evidence table directly.</div>`;
- const rows=p.evidence.map(e=>{const down=pbmDown(e);return `<tr><td>${e.d}</td><td>${down?'Fill status unknown · pharmacy feed down since 06:00':esc(e.f)}</td><td>${down?st('unknown'):st(e.st)}</td><td>${down?fr('down'):fr(e.fr)}<div class="asof">${down?'Last success 06:00':esc(e.asof)}</div></td><td>${e.src.length?e.src.map(src).join(' '):'<span class="hint">—</span>'}</td></tr>`;}).join('');
- return mHead(p,'#queue')+
- `<section class="banner ${b.tone}" aria-label="Top issue"><span class="ic" aria-hidden="true">${b.icon}</span><div><h2>${esc(b.title)}</h2><p>${bt}</p><div class="btnrow">${b.src.map(src).join(' ')}</div>${b.never?`<p class="never" style="margin:8px 0 0">${esc(b.never)}</p>`:''}</div></section>
- <div class="mgrid">
-  <div class="col">
-   <section class="card"><h2>What changed <span class="ai-tag">AI BRIEF · EVERY LINE LINKED</span></h2><div class="card-b">${brief}<p class="hint" style="margin:10px 0 0">The brief only restates source records. It draws no clinical conclusions.</p></div></section>
-   <section class="card"><h2>Evidence and freshness</h2><div class="card-b" style="padding-bottom:6px"><div class="legend" style="margin-bottom:8px">${st('ok')}${st('single')}${st('conflict')}${st('unknown')}<span>· freshness is judged against what is normal for each source</span></div></div>
-    <div class="tscroll"><table class="ev"><thead><tr><th>Domain</th><th>Source fact</th><th>Evidence</th><th>Freshness</th><th>Record</th></tr></thead><tbody>${rows}</tbody></table></div></section>
-  </div>
-  <div class="col">
-   <section class="card"><h2>Next steps</h2><div class="card-b"><ol class="checks">${p.steps.map((s,i)=>`<li><span class="n">${i+1}</span><span>${esc(s)}</span></li>`).join('')}</ol><div class="btnrow" style="margin-top:14px"><a class="btn primary" href="#outreach-${p.key}">Start outreach</a></div></div></section>
-   ${p.cards.map(c=>`<section class="card"><h2>${c.h}</h2><div class="card-b kv">${c.lines.map(l=>`<div>${l}</div>`).join('')}<div style="margin-top:6px">${src(c.src)}</div>${c.w?`<div class="w">${esc(c.w)}</div>`:''}</div></section>`).join('')}
-  </div>
- </div>
- <section class="card" style="margin-top:16px"><h2>Timeline <span class="sub">event time first; receipt time where it differs</span></h2><div class="card-b"><ol class="tl">${p.timeline.map(t=>`<li><h3>${esc(t.t)}${t.dup?`<span class="dup">${esc(t.dup)}</span>`:''}</h3><p><span class="tnum">${esc(t.at)}</span> · ${esc(t.p)}</p>${src(t.src)}</li>`).join('')}</ol></div></section>`;
+ const b=p.banner,bx=!S.pbm&&b.xd?b.xd:b.x,view=S.view[p.key]||'ev';
+ const brief=S.ai?`<ol class="brief">${p.brief.map((l,i)=>{const d=down(l);return `<li><span class="num">${i+1}</span><div>${esc(d?l.td:l.t)}<div class="meta">${d?st('unknown')+fr('down'):st(l.st)+l.src.map(src).join('')}</div></div></li>`;}).join('')}</ol><p class="hint" style="margin:12px 0 0">The brief only restates source records. It draws no clinical conclusions.</p>`:`<div class="paused"><strong>AI brief paused.</strong> Nothing below has changed: every sourced fact is still in the evidence table.</div>`;
+ const rows=p.ev.map(e=>{const d=down(e);return `<tr><td>${e.d}</td><td>${d?'Unknown · pharmacy feed down since 06:00':esc(e.f)}</td><td>${d?st('unknown'):st(e.st)}</td><td>${d?fr('down'):fr(e.fr)}<span class="ao">${d?'Last success 06:00':esc(e.ao)}</span></td><td>${e.src.length?e.src.map(src).join(' '):'<span class="hint">—</span>'}</td></tr>`;}).join('');
+ const lower=view==='ev'?`<div class="cb" style="padding-bottom:8px"><div class="legend">${st('ok')}${st('single')}${st('conflict')}${st('unknown')}<span>Freshness is judged against what is normal for each source.</span></div></div><div class="tscroll"><table class="ev"><thead><tr><th>Topic</th><th>What the source says</th><th>Evidence</th><th>Freshness</th><th>Record</th></tr></thead><tbody>${rows}</tbody></table></div>`:`<div class="cb"><ol class="tl">${p.tl.map(t=>`<li><h3>${esc(t.t)}</h3><p><span class="tnum">${esc(t.at)}</span> · ${esc(t.p)}</p>${src(t.src)}</li>`).join('')}</ol></div>`;
+ return head(p,'#queue')+
+ `<div class="explain"><span><strong>Member 360</strong> is one screen with everything Maria needs about ${p.name}, pulled from every source, with where each fact came from.</span><button type="button" data-act="explain" aria-expanded="${S.explain}">${S.explain?'Hide':'What does that mean?'}</button>${S.explain?`<div class="explain-box"><strong>Why “360”:</strong> it is the full circle around one member. Today Maria opens 6–7 systems (claims, pharmacy, hospital alerts, notes, her own spreadsheet) to rebuild this picture. Here it is in one place:<ul><li><b>Top:</b> the one issue that changes today’s action.</li><li><b>What changed:</b> a 3-line AI brief, each line linked to its source record.</li><li><b>Evidence:</b> every fact, how sure we are, and how fresh it is.</li><li><b>Right side:</b> next steps, contact rules, care team and social needs.</li></ul></div>`:''}</div>
+ <section class="banner ${b.tone}" id="banner" aria-label="Top issue"><span class="ic" aria-hidden="true">${b.ic}</span><div><h2>${esc(b.t)}</h2><p>${bx}</p><div class="row">${b.src.map(src).join('')}</div><div class="never">${esc(b.never)}</div></div></section>
+ <div class="mgrid"><div class="col">
+  <section class="card" id="brief"><div class="ch blue">What changed<small>${S.ai?'AI brief · every line linked':'AI paused'}</small></div><div class="cb">${brief}</div></section>
+  <section class="card"><div class="ch plain"><span>${view==='ev'?'Evidence and freshness':'Timeline'}</span><span class="seg" role="group" aria-label="View"><button type="button" data-view="ev" aria-pressed="${view==='ev'}">Evidence</button><button type="button" data-view="tl" aria-pressed="${view==='tl'}">Timeline</button></span></div>${lower}</section>
+ </div><div class="col">
+  <section class="card"><div class="ch navy">Next steps</div><div class="cb"><ol class="steps">${p.steps.map((s,i)=>`<li><span class="num">${i+1}</span><span>${esc(s)}</span></li>`).join('')}</ol><div class="row" style="margin-top:14px"><a class="btn primary" href="#outreach-${p.key}">Start the call →</a></div></div></section>
+  ${p.cards.map(c=>`<section class="card"><div class="ch plain">${c.h}</div><div class="cb kv">${c.l.map(l=>`<div>${l}</div>`).join('')}<div style="margin-top:6px">${src(c.src)}</div>${c.w?`<div class="warnline">${esc(c.w)}</div>`:''}</div></section>`).join('')}
+ </div></div>`;
 }
 
-/* ---------------- Screen 3: outreach & note ---------------- */
-function outcomes(p,s){const r=p.routes[s.route];return r.s==='gated'?['prep','callback','noanswer']:['prep','connected','noanswer','voicemail'];}
-function draftNote(p,s){
- const r=p.routes[s.route],o=s.outcome,conn=o==='connected';
- const L=[];
- L.push('TRANSITION OUTREACH NOTE · DRAFT FOR RN REVIEW');
- L.push(`${p.name}, ${p.age} · ${p.id} · ${p.plan}`);
- L.push(`Mon 2 Nov 2026 · Maria, RN`);
+/* ================= Screen 3: Call & note ================= */
+const outs=(p,s)=>p.routes[s.route].s==='gated'?['prep','callback','noanswer']:['prep','connected','noanswer','voicemail'];
+function note(p,s){
+ const r=p.routes[s.route],c=s.out==='connected',L=[];
+ L.push('CARE COORDINATION NOTE · DRAFT FOR RN REVIEW',`${p.name}, ${p.age} · ${p.id} · ${p.plan}`,'Mon 2 Nov 2026 · Maria, RN','',`CONTACT: ${r.l} (${r.ph}) · ${OUTC[s.out]}`);
+ if(OUTX[s.out])L.push(OUTX[s.out]);
  L.push('');
- L.push(`CONTACT: ${r.l} (${r.num}) · ${OUT[o]}`);
- if(o==='prep')L.push('Preparation only. No successful contact documented.');
- if(o==='noanswer')L.push('Attempted. No answer. No assessment completed.');
- if(o==='voicemail')L.push('Voicemail left with a callback number only. No clinical details.');
- if(o==='callback')L.push('Neutral callback request left. No clinical details disclosed.');
- L.push('');
- const cf=p.prefill.filter((f,i)=>conn&&s.conf[i]),uc=p.prefill.filter((f,i)=>!(conn&&s.conf[i]));
+ const cf=p.pre.filter((f,i)=>c&&s.conf[i]),uc=p.pre.filter((f,i)=>!(c&&s.conf[i]));
  if(cf.length){L.push('CONFIRMED ON THIS CALL');cf.forEach(f=>L.push(`- ${f.l}: ${f.v} [${f.src}]`));L.push('');}
  if(uc.length){L.push('FROM SOURCES, NOT YET CONFIRMED');uc.forEach(f=>L.push(`- ${f.l}: ${f.v} [${f.src}]`));L.push('');}
- const answered=p.ask.filter((a,i)=>conn&&(s.ans[i]||'').trim());
- if(answered.length){L.push(r.s==='ok'&&/Caregiver|team|agency|supplier/i.test(r.l)?'REPORTED BY CONTACT':'MEMBER REPORTED');p.ask.forEach((a,i)=>{const v=(s.ans[i]||'').trim();if(conn&&v)L.push(`- ${a.l}: ${v}`);});L.push('');}
- if(conn&&s.findings.trim()){L.push('RN FINDINGS');L.push(s.findings.trim());L.push('');}
- const unk=p.ask.filter((a,i)=>!(conn&&(s.ans[i]||'').trim())).map(a=>a.l);
+ const ans=p.ask.map((a,i)=>[a.l,(s.ans[i]||'').trim()]).filter(([,v])=>c&&v);
+ if(ans.length){L.push('REPORTED ON THIS CALL');ans.forEach(([l,v])=>L.push(`- ${l}: ${v}`));L.push('');}
+ if(c&&s.find.trim()){L.push('RN FINDINGS',s.find.trim(),'');}
+ const unk=p.ask.filter((a,i)=>!(c&&(s.ans[i]||'').trim())).map(a=>a.l);
  if(unk.length){L.push('STILL UNKNOWN');unk.forEach(u=>L.push(`- ${u}`));L.push('');}
- const a=acts(p).filter(x=>x.s==='accepted').map(x=>x.t);
- L.push('NEXT STEPS');(a.length?a:p.steps.slice(0,3)).forEach(x=>L.push(`- ${x}`));
- L.push('');
- L.push('Every line above comes from an entry Maria made or a linked source record. Nothing is inferred.');
+ const acc=acts(p).filter(x=>x.s==='ok').map(x=>x.t);
+ L.push('NEXT STEPS');(acc.length?acc:p.steps.slice(0,3)).forEach(x=>L.push(`- ${x}`));
+ L.push('','Every line comes from Maria’s entries or a linked source record.');
  return L.join('\n');
 }
-function vOutreach(p){
- const s=sess(p),r=p.routes[s.route],conn=s.outcome==='connected',locked=s.signed;
- const nConf=p.prefill.filter((f,i)=>s.conf[i]).length,nAns=p.ask.filter((a,i)=>(s.ans[i]||'').trim()).length;
- const routes=p.routes.map((x,i)=>`<label class="route${i===s.route?' sel':''}${x.s==='blocked'?' blocked':''}" for="rt-${i}"><input type="radio" name="route" id="rt-${i}" value="${i}" ${i===s.route?'checked':''} ${x.s==='blocked'||locked?'disabled':''}><span><strong>${i+1}. ${esc(x.l)}</strong><span class="num">${esc(x.num)}</span><small>${x.s==='blocked'?'✕ ':''}${esc(x.note)}</small></span></label>`).join('');
- const partial=s.outcome!=='connected'||nAns<p.ask.length;
- const writes=[['Identity & consent','✓'],['Assessment',partial?'Saved as PARTIAL':'Complete'],['Goal & barrier',(s.ans[p.ask.length-1]||'').trim()&&conn?'✓':'Open'],['Care plan','✓ updated'],['Task · owner · due','✓ Maria'],['Signed note','✓ signed'],['Audit + CM writeback',s.ack?'✓ Acknowledged · '+s.receipt:'Pending…']];
- let noteArea;
- if(s.signed){
-  noteArea=`<div class="draft" tabindex="0" aria-label="Signed note">${esc(S.ai?draftNote(p,s):s.manual)}</div>
-  <div class="sec-t">Captured once, written to all seven</div>
-  <ul class="writes">${writes.map(([l,v])=>`<li class="${/Pending/.test(v)?'pending':/PARTIAL|Open/.test(v)?'partial':''}"><span>${l}</span><span>${esc(v)}</span></li>`).join('')}</ul>
-  <div class="btnrow" style="margin-top:12px"><button type="button" class="btn" data-act="newnote">Start a new note</button><a class="btn" href="#queue">Back to queue</a></div>`;
- }else{
-  const draft=S.ai?`<div class="draft" id="draft" tabindex="0" aria-label="Draft note">${esc(draftNote(p,s))}</div>`:`<label class="sr" for="manual">Manual note</label><textarea class="draft-ta" id="manual" placeholder="AI drafting is paused. Write the note yourself; the fields and sources on this page are unchanged.">${esc(s.manual)}</textarea>`;
+function vCall(p){
+ const s=sess(p),r=p.routes[s.route],c=s.out==='connected',lk=s.signed;
+ const nC=p.pre.filter((f,i)=>s.conf[i]&&c).length,nA=p.ask.filter((a,i)=>(s.ans[i]||'').trim()).length;
+ const routes=p.routes.map((x,i)=>`<label class="route${i===s.route?' sel':''}${x.s==='blocked'?' blocked':''}" for="rt-${i}"><input type="radio" name="route" id="rt-${i}" value="${i}" ${i===s.route?'checked':''} ${x.s==='blocked'||lk?'disabled':''}><span><strong>${esc(x.l)}</strong><span class="ph">${x.ph}</span><small>${x.s==='blocked'?'✕ ':''}${esc(x.n)}</small></span></label>`).join('');
+ const partial=!c||nA<p.ask.length;
+ const writes=[['Identity & consent','✓ saved'],['Assessment',partial?'Saved as partial':'✓ complete'],['Goal & barrier',c&&(s.ans[p.ask.length-1]||'').trim()?'✓ saved':'Still open'],['Care plan','✓ updated'],['Task · owner · due','✓ Maria'],['Signed note','✓ signed'],['CM system & audit',s.ack?'✓ received · '+s.rcpt:'Sending…']];
+ let n;
+ if(s.signed)n=`<div class="draft" tabindex="0" aria-label="Signed note">${esc(S.ai||!s.manual?note(p,s):s.manual)}</div><div class="sect">One entry, saved to all seven places</div><ul class="writes">${writes.map(([l,v])=>`<li class="${/✓/.test(v)?'':'p'}"><span>${l}</span><span>${esc(v)}</span></li>`).join('')}</ul><div class="row" style="margin-top:12px"><button type="button" class="btn" data-act="newnote">Start a new note</button><a class="btn primary" href="#queue">Back to the queue</a></div>`;
+ else{
+  const body=S.ai?`<div class="draft" id="draft" tabindex="0" aria-label="Draft note">${esc(note(p,s))}</div>`:`<label class="sr" for="manual">Write the note</label><textarea class="draft-ta" id="manual" placeholder="AI drafting is paused. Write the note here; every field and source on the left is unchanged.">${esc(s.manual)}</textarea>`;
   const can=S.ai||s.manual.trim();
-  noteArea=draft+(s.review?`<div class="review"><label for="rev"><input type="checkbox" id="rev"> I read every line. It matches what happened and nothing is invented.</label><div class="btnrow" style="margin-top:10px"><button type="button" class="btn primary" id="sign" data-act="sign" disabled>Sign and save</button><button type="button" class="btn" data-act="unreview">Keep editing</button></div></div>`:`<div class="btnrow" style="margin-top:12px"><button type="button" class="btn primary" data-act="review" ${can?'':'disabled'}>Review and sign</button></div>`);
+  n=body+(s.review?`<div class="review"><label for="rev"><input type="checkbox" id="rev"> I read every line. It matches what happened, and nothing is invented.</label><div class="row" style="margin-top:10px"><button type="button" class="btn primary" id="sign" data-act="sign" disabled>Sign and save</button><button type="button" class="btn" data-act="unreview">Keep editing</button></div></div>`:`<div class="row" style="margin-top:12px"><button type="button" class="btn primary" data-act="review" ${can?'':'disabled'}>Review and sign</button><span class="hint">${S.ai?'Nothing is saved until Maria signs.':'Write the note to continue.'}</span></div>`);
  }
- return mHead(p,'#member-'+p.key)+
- `<div class="banner ${p.banner.tone}" style="margin-top:14px"><span class="ic" aria-hidden="true">${p.banner.icon}</span><div><h2 style="font-size:15px;margin:0">${esc(p.banner.title)}</h2></div></div>
- <div class="ogrid">
-  <section class="card"><h2>1 · Contact plan</h2><div class="card-b">
-   <div class="sec-t" style="margin-top:0">Permitted routes, in order</div>
-   <div class="routes" role="radiogroup" aria-label="Contact route">${routes}</div>
-   ${r.s==='gated'||p.script&&s.route===0?`<div class="script"><strong>Neutral script</strong><br>${esc(p.script)}</div>`:''}
-   <div class="btnrow" style="margin-top:10px"><button type="button" class="btn sm" data-copy="${esc(r.num.replace(/[^0-9-]/g,''))}">Copy number</button></div>
-   <div class="field"><label for="outcome">Contact outcome</label><select id="outcome" ${locked?'disabled':''}>${outcomes(p,s).map(o=>`<option value="${o}" ${o===s.outcome?'selected':''}>${OUT[o]}</option>`).join('')}</select><span class="hint">“Preparation only” never records a completed contact or assessment.</span></div>
+ return head(p,'#member-'+p.key)+
+ `<section class="banner ${p.banner.tone}" style="padding:10px 14px"><span class="ic" aria-hidden="true">${p.banner.ic}</span><div><h2 style="margin:3px 0 0;font-size:15px">${esc(p.banner.t)}</h2></div></section>
+ <div class="ogrid"><div class="col">
+  <section class="card" id="routes"><div class="ch navy">1 · Who to call<small>${p.routes.length} permitted routes, in order</small></div><div class="cb"><div class="routes" role="radiogroup" aria-label="Who to call">${routes}</div>
+   ${r.s==='gated'?`<div class="script"><strong>Say only this:</strong><br>${esc(p.script)}</div>`:''}
+   <div class="row" style="margin-top:10px"><button type="button" class="btn sm" data-copy="${r.ph}">Copy ${r.ph}</button><span class="hint">Maria dials from her own phone; this demo calls no one.</span></div></div></section>
+  <section class="card"><div class="ch navy">2 · What happened<small>${p.pre.length} pre-filled · ${nC} confirmed · ${nA}/${p.ask.length} asked</small></div><div class="cb">
+   <div class="outs" role="group" aria-label="Call outcome">${outs(p,s).map(o=>`<button type="button" data-out="${o}" aria-pressed="${o===s.out}" ${lk?'disabled':''}>${OUTC[o]}</button>`).join('')}</div>
+   <p class="hint" style="margin:8px 0 4px">${c?'Confirm what the member verified, and type what you learned.':'“Preparation only” never records a call or an assessment. Choose Connected to confirm fields.'}</p>
+   <div class="sect">Already known · confirm on the call</div>
+   ${p.pre.map((f,i)=>`<div class="pf"><div><div class="lab">${esc(f.l)}</div><div class="val">${esc(f.v)}</div><div class="meta">${src(f.src)}${s.conf[i]&&c?'<span class="c">CONFIRMED</span>':'<span class="u">NOT YET CONFIRMED</span>'}</div></div><label class="cf" for="cf-${i}"><input type="checkbox" id="cf-${i}" data-conf="${i}" ${s.conf[i]&&c?'checked':''} ${!c||lk?'disabled':''}>Confirmed</label></div>`).join('')}
+   <div class="sect">Ask on the call</div>
+   ${p.ask.map((a,i)=>`<div class="field"><label for="ans-${i}">${esc(a.l)}</label><input id="ans-${i}" data-ans="${i}" value="${esc(s.ans[i]||'')}" placeholder="${esc(c?a.ph:'Choose Connected first')}" ${!c||lk?'disabled':''}></div>`).join('')}
+   <div class="field"><label for="find">Maria’s findings</label><textarea id="find" placeholder="${c?'What you verified. Leave unknowns unresolved.':'Choose Connected first'}" ${!c||lk?'disabled':''}>${esc(s.find)}</textarea></div>
+   <p class="hint" style="margin:10px 0 0">The full assessment has 40 fields. About 22 come pre-filled from sources; about 18 need the conversation. This screen shows the ones that matter for ${p.name}.</p>
   </div></section>
-  <section class="card"><h2>2 · Assessment</h2><div class="card-b">
-   <div class="counter"><span class="pill">${p.prefill.length} pre-filled here</span><span class="pill">${nConf} confirmed</span><span class="pill">${nAns} of ${p.ask.length} asked</span></div>
-   <p class="hint" style="margin:0 0 6px">Full form: about 22 of 40 fields pre-filled from sources; about 18 need the conversation. Showing the ones that matter for this call.</p>
-   ${p.prefill.map((f,i)=>`<div class="pf"><div><div class="lab">${esc(f.l)}</div><div class="val">${esc(f.v)}</div><div class="meta">${src(f.src)} ${s.conf[i]&&conn?'<span class="okc">CONFIRMED</span>':'<span class="unc">UNCONFIRMED</span>'}</div></div><label class="cfm" for="cf-${i}"><input type="checkbox" id="cf-${i}" data-conf="${i}" ${s.conf[i]?'checked':''} ${!conn||locked?'disabled':''}> Confirmed</label></div>`).join('')}
-   <div class="sec-t">Ask on the call</div>
-   ${p.ask.map((a,i)=>`<div class="field" style="margin-top:8px"><label for="ans-${i}">${esc(a.l)}</label><input id="ans-${i}" data-ans="${i}" value="${esc(s.ans[i]||'')}" placeholder="${esc(a.ph)}" ${locked?'disabled':''}></div>`).join('')}
-   <div class="field"><label for="findings">RN findings</label><textarea id="findings" placeholder="What you verified. Leave unknowns unresolved." ${locked?'disabled':''}>${esc(s.findings)}</textarea></div>
-   <p class="hint" style="margin:8px 0 0">${conn?'Answers and confirmations go into the note.':'Set the outcome to Connected to confirm fields; answers are kept but not written to the note until then.'}</p>
-  </div></section>
-  <section class="card"><h2>3 · Note <span class="ai-tag">${S.ai?'AI DRAFT · RN SIGNS':'MANUAL · AI PAUSED'}</span></h2><div class="card-b">${noteArea}</div></section>
  </div>
- <div class="flow" aria-label="Capture once"><span>Identity &amp; consent</span><i>→</i><span>Assessment</span><i>→</i><span>Goal &amp; barrier</span><i>→</i><span>Care plan</span><i>→</i><span>Task · owner · due</span><i>→</i><span>Signed note</span><i>→</i><span>Audit · CM writeback</span></div>`;
+ <div class="note-col"><section class="card" id="notecard"><div class="ch blue">3 · Note<small>${S.ai?'AI draft · Maria signs':'Manual · AI paused'}</small></div><div class="cb">${n}</div></section></div></div>
+ <div class="flow" aria-label="Capture once"><span>Identity &amp; consent</span><i>→</i><span>Assessment</span><i>→</i><span>Goal &amp; barrier</span><i>→</i><span>Care plan</span><i>→</i><span>Task · owner · due</span><i>→</i><span>Signed note</span><i>→</i><span>CM system &amp; audit</span></div>`;
 }
 
-/* ---------------- Render ---------------- */
-function render(keepFocus){
- const r=route();
- if(r.p)S.cur=r.p.key;
- chrome(r);
- const app=document.getElementById('app');
- const act=document.activeElement,id=act&&act.id,pos=act&&act.selectionStart;
- app.innerHTML=r.v==='member'?vMember(r.p):r.v==='outreach'?vOutreach(r.p):vQueue();
- document.title=(r.p?r.p.name+' · ':'')+'HiLabs Care Workbench';
- if(keepFocus&&id){const el=document.getElementById(id);if(el){el.focus();try{if(pos!=null)el.setSelectionRange(pos,pos);}catch(_){}}}
+/* ================= Render ================= */
+function render(){
+ const r=route();if(r.p)S.cur=r.p.key;
+ tabs(r);
+ document.getElementById('app').innerHTML=r.v==='member'?vMember(r.p):r.v==='outreach'?vCall(r.p):vQueue();
+ document.title=(r.p?r.p.name+' · ':'')+'Care Workbench';
+ drawTour();
 }
+function refreshNote(p){const s=sess(p);if(s.review){s.review=false;render();return;}const d=document.getElementById('draft');if(d)d.textContent=note(p,s);}
 function openSrc(id){
- const r=R[id],d=document.getElementById('dlg');if(!r)return;
- d.innerHTML=`<div class="dh"><div><h2 id="dlg-t" class="mono">${id}</h2><p>${esc(r[0])} · ${esc(r[1])} · fictional record</p></div><button type="button" class="x" data-act="close" aria-label="Close">×</button></div><div class="db"><dl class="rf">${r[2].map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl><p class="hint" style="margin:12px 0 0">Source-reported data is shown as received. It is not clinician-confirmed until Maria confirms it.</p></div>`;
+ const r=R[id];if(!r){toast('Record '+id+' is not in this demo.');return;}const d=document.getElementById('dlg');
+ d.innerHTML=`<div class="dh"><div><h2 id="dlg-t">${id}</h2><p>${esc(r[0])} · ${esc(r[1])} · fictional</p></div><button type="button" class="x" data-act="close" aria-label="Close">×</button></div><div class="db"><dl class="rf"><dt>Happened</dt><dd>${esc(r[2])}</dd><dt>Received</dt><dd>${esc(r[3])}</dd>${r[4].map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl><p class="hint" style="margin:12px 0 0">Shown exactly as the source sent it. It is not clinician-confirmed until Maria confirms it.</p></div>`;
  d.showModal();
 }
+/* Guided demo */
+function drawTour(){
+ const el=document.getElementById('tour');document.querySelectorAll('.spot').forEach(e=>e.classList.remove('spot'));
+ if(S.tour<0){el.hidden=true;return;}
+ const t=TOUR[S.tour];el.hidden=false;
+ el.innerHTML=`<div class="tt"><span>Guided demo · ${S.tour+1} of ${TOUR.length}</span><button type="button" class="x" data-act="tour-end" aria-label="Close guided demo" style="width:28px;height:28px;font-size:15px">×</button></div><h3>${esc(t.t)}</h3><p>${esc(t.x)}</p><div class="row"><span class="dots">${TOUR.map((_,i)=>`<i class="${i===S.tour?'on':''}"></i>`).join('')}</span><span class="row" style="margin:0"><button type="button" class="btn sm" data-act="tour-back" ${S.tour===0?'disabled':''}>Back</button><button type="button" class="btn sm primary" data-act="tour-next">${S.tour===TOUR.length-1?'Finish':'Next'}</button></span></div>`;
+ const tg=document.querySelector(t.el);if(tg)tg.classList.add('spot');
+}
+function goTour(i){
+ S.tour=i;const t=TOUR[i];if(t.sel){S.sel=t.sel;S.filter='now';S.q='';}
+ if(t.go&&location.hash!==t.go&&!(t.go==='#queue'&&!location.hash)){location.hash=t.go;return;}
+ render();const tg=document.querySelector(t.el);if(tg)tg.scrollIntoView({block:'center',behavior:'smooth'});
+}
 
-/* ---------------- Events ---------------- */
+/* ================= Events ================= */
 document.addEventListener('click',e=>{
- const t=e.target.closest('button,a');if(!t)return;
- const d=t.dataset,r=route(),p=r.p||P[S.sel];
+ const b=e.target.closest('button,a');if(!b)return;
+ const d=b.dataset,r=route();
+ if(b.tagName==='A'){const h=b.getAttribute('href')||'';if(h===(location.hash||'#queue')){e.preventDefault();window.scrollTo({top:0,behavior:'smooth'});toast('You’re on '+({queue:'the work queue',member:'Member 360',outreach:'the call screen'})[r.v]+(r.p?' for '+r.p.name:'')+'.');return;}}
  if(d.src){openSrc(d.src);return;}
- if(d.act==='close'){document.getElementById('dlg').close();return;}
+ switch(d.act){
+  case'close':document.getElementById('dlg').close();return;
+  case'tour':goTour(0);return;
+  case'tour-next':if(S.tour>=TOUR.length-1){S.tour=-1;drawTour();toast('Demo finished. Explore any member on your own.');}else goTour(S.tour+1);return;
+  case'tour-back':if(S.tour>0)goTour(S.tour-1);return;
+  case'tour-end':S.tour=-1;drawTour();return;
+  case'reset':S=fresh();document.getElementById('t-ai').checked=false;document.getElementById('t-pbm').checked=false;if(location.hash&&location.hash!=='#queue')location.hash='queue';else render();toast('Demo reset.');return;
+  case'clear':S.filter='all';S.q='';render();return;
+  case'explain':S.explain=!S.explain;render();return;
+ }
  if(d.filter){S.filter=d.filter;render();return;}
  if(d.sel){S.sel=d.sel;render();return;}
- if(d.act==='clear'){S.filter='all';S.q='';render();return;}
- const a=r.v==='queue'?acts(P[S.sel]):null;
- if(a){
-  if(d.accept){a[+d.accept].s='accepted';render();toast('Accepted. Task created for Maria.');return;}
-  if(d.edit){a[+d.edit].s='editing';render();return;}
-  if(d.save){const v=document.getElementById(`edit-${S.sel}-${d.save}`).value.trim();if(v)a[+d.save].t=v;a[+d.save].s='accepted';render();toast('Edited and accepted.');return;}
-  if(d.dismiss){a[+d.dismiss].s='dismissing';render();return;}
-  if(d.reason){a[+d.reason].s='dismissed';a[+d.reason].reason=d.r;render();toast('Dismissed. Reason logged for rule tuning.');return;}
-  if(d.undo){const i=+d.undo;a[i].s='open';a[i].t=P[S.sel].actions[i].t;render();return;}
+ if(d.view&&r.p){S.view[r.p.key]=d.view;render();return;}
+ if(r.v==='queue'){
+  const p=P[S.sel],a=acts(p);
+  if(d.accept){a[+d.accept].s='ok';render();toast('Added to Maria’s tasks.');return;}
+  if(d.edit){a[+d.edit].s='edit';render();const f=document.getElementById('ed-'+d.edit);if(f)f.focus();return;}
+  if(d.save){const v=(document.getElementById('ed-'+d.save)||{}).value;if(v&&v.trim())a[+d.save].t=v.trim();a[+d.save].s='ok';render();toast('Edited and added to Maria’s tasks.');return;}
+  if(d.dismiss){a[+d.dismiss].s='why';render();return;}
+  if(d.reason){a[+d.reason].s='no';a[+d.reason].r=d.r;render();toast('Dismissed. Reason recorded.');return;}
+  if(d.undo){const i=+d.undo;a[i]={s:'open',t:p.actions[i].t,r:''};render();return;}
  }
  if(r.v==='outreach'){
-  const s=sess(p);
-  if(d.copy){const num=d.copy;const done=()=>toast('Copied '+num);if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(num).then(done,()=>toast('Number: '+num));}else toast('Number: '+num);return;}
-  if(d.act==='review'){s.review=true;render();return;}
+  const p=r.p,s=sess(p);
+  if(d.out){s.out=d.out;s.review=false;render();return;}
+  if(d.copy){const num=d.copy;const ok=()=>toast('Copied '+num);try{navigator.clipboard.writeText(num).then(ok,()=>toast('Number: '+num));}catch(_){toast('Number: '+num);}return;}
+  if(d.act==='review'){s.review=true;render();const c=document.getElementById('rev');if(c)c.focus();return;}
   if(d.act==='unreview'){s.review=false;render();return;}
-  if(d.act==='sign'){s.signed=true;s.review=false;render();toast('Signed. Writing back to the CM system…');setTimeout(()=>{s.ack=true;s.receipt='DEMO-'+p.id.slice(4)+'-'+Math.floor(1000+Math.random()*8999);if(route().p===p)render();toast('CM system acknowledged the note.');},1400);return;}
+  if(d.act==='sign'){s.signed=true;s.review=false;render();toast('Signed. Sending to the CM system…');setTimeout(()=>{s.ack=true;s.rcpt='#'+p.id.slice(4)+'-'+(1000+Math.floor(Math.random()*8999));if(route().p===p)render();toast('The CM system received the note.');},1400);return;}
   if(d.act==='newnote'){delete S.sess[p.key];render();return;}
  }
 });
 document.addEventListener('change',e=>{
  const t=e.target,r=route();
- if(t.id==='t-ai'){S.ai=!t.checked;render();toast(S.ai?'AI assist on.':'AI paused. Manual path stays available.');return;}
- if(t.id==='t-pbm'){S.pbm=!t.checked;render();toast(S.pbm?'Pharmacy feed restored.':'Pharmacy feed down: fill facts now show “unknown”.');return;}
+ if(t.id==='t-ai'){S.ai=!t.checked;render();toast(S.ai?'AI assist is back on.':'AI paused. Maria can still write and sign notes.');return;}
+ if(t.id==='t-pbm'){S.pbm=!t.checked;render();toast(S.pbm?'Pharmacy feed restored.':'Pharmacy feed down. Fill facts now show as unknown.');return;}
  if(t.id==='rev'){const b=document.getElementById('sign');if(b)b.disabled=!t.checked;return;}
  if(r.v!=='outreach')return;
  const s=sess(r.p);
- if(t.name==='route'){s.route=+t.value;if(!outcomes(r.p,s).includes(s.outcome))s.outcome='prep';render();return;}
- if(t.id==='outcome'){s.outcome=t.value;render();return;}
- if(t.dataset.conf){s.conf[+t.dataset.conf]=t.checked;render();return;}
+ if(t.name==='route'){s.route=+t.value;if(!outs(r.p,s).includes(s.out))s.out='prep';s.review=false;render();return;}
+ if(t.dataset.conf){s.conf[+t.dataset.conf]=t.checked;s.review=false;render();return;}
 });
 document.addEventListener('input',e=>{
  const t=e.target,r=route();
- if(t.id==='q'){S.q=t.value;render(true);return;}
+ if(t.id==='q'){S.q=t.value;const pos=t.selectionStart;render();const q=document.getElementById('q');if(q){q.focus();try{q.setSelectionRange(pos,pos);}catch(_){}}return;}
  if(r.v!=='outreach')return;
  const s=sess(r.p);
- if(t.dataset.ans){s.ans[+t.dataset.ans]=t.value;}
- else if(t.id==='findings'){s.findings=t.value;}
- else if(t.id==='manual'){s.manual=t.value;const b=document.querySelector('[data-act="review"]');if(b)b.disabled=!t.value.trim();return;}
- else return;
- s.review=false;
- const dr=document.getElementById('draft');if(dr)dr.textContent=draftNote(r.p,s);
- const rv=document.querySelector('.review');if(rv){render(true);}
+ if(t.dataset.ans!==undefined){s.ans[+t.dataset.ans]=t.value;refreshNote(r.p);}
+ else if(t.id==='find'){s.find=t.value;refreshNote(r.p);}
+ else if(t.id==='manual'){s.manual=t.value;const b=document.querySelector('[data-act="review"]');if(b)b.disabled=!t.value.trim();}
 });
-document.getElementById('reset').addEventListener('click',()=>{S=fresh();document.getElementById('t-ai').checked=false;document.getElementById('t-pbm').checked=false;location.hash='queue';render();toast('Demo reset.');});
 document.getElementById('dlg').addEventListener('click',e=>{if(e.target.id==='dlg')e.target.close();});
-window.addEventListener('hashchange',()=>{const d=document.getElementById('dlg');if(d.open)d.close();render();window.scrollTo(0,0);});
+window.addEventListener('hashchange',()=>{const d=document.getElementById('dlg');if(d.open)d.close();render();
+ if(S.tour>=0){const tg=document.querySelector(TOUR[S.tour].el);if(tg)tg.scrollIntoView({block:'center',behavior:'smooth'});}else window.scrollTo(0,0);});
 render();
 })();
 </script>
