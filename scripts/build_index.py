@@ -22,6 +22,7 @@ FAVICON = (
 )
 
 body = SRC.read_text(encoding="utf-8")
+body = body.replace('<script src="assets/annex-data.js"></script>', '<script>\n' + (ROOT / 'assets/annex-data.js').read_text(encoding='utf-8') + '</script>')
 head_end = body.index("</style>") + len("</style>")
 head_part, page_part = body[:head_end], body[head_end:]
 
