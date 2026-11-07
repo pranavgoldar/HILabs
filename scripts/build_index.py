@@ -45,3 +45,8 @@ html = f"""<!doctype html>
 """
 OUT.write_text(html, encoding="utf-8")
 print(f"Wrote {OUT.relative_to(ROOT)} ({len(html):,} bytes)")
+
+# Download artifact uses the same source; Vercel redirects the legacy root URL.
+DOWNLOAD = ROOT / "downloads" / SRC.name
+DOWNLOAD.parent.mkdir(exist_ok=True)
+DOWNLOAD.write_text(body, encoding="utf-8")

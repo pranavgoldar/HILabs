@@ -14,6 +14,7 @@ results={'engine':ENGINE,'layouts':0,'source_records':0,'flows':[]}
 with sync_playwright() as p:
  browser=getattr(p,ENGINE).launch()
  page=browser.new_page(viewport={'width':390,'height':844},has_touch=True)
+ page.add_init_script("localStorage.setItem('hilabs-welcome-v4','1')")
  errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
  page.goto(BASE)
  raw=page.evaluate('window.ANNEX_DATA')

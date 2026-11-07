@@ -9,7 +9,7 @@ It covers the three screens from the case deck:
 | **Member 360** | Know | One member on one screen: the top issue, an AI brief linked to sources, evidence with confidence and freshness, and a timeline |
 | **Call & note** | Do | Permitted contact routes (dead numbers blocked), a pre-filled assessment to confirm, and a note drafted from Maria's entries that she reviews and signs |
 
-A **Guided demo** button walks a reviewer through Maria's Monday in nine steps.
+A **Guided demo** button walks a reviewer through Maria's Monday in twelve steps.
 All members, records and phone numbers are fictional. Nothing calls anyone or writes to a real system.
 
 ## Files
@@ -73,3 +73,10 @@ Then open http://localhost:8000.
 4. Choose **Deploy**. Vercel gives a public `*.vercel.app` address.
 
 Every push to the production branch redeploys automatically.
+
+
+## Submission walkthrough update
+
+The prototype now demonstrates all 16 requirements from the final product prompt. See [CHANGELOG.md](CHANGELOG.md) for the deck/annex mapping, twelve-step tour and two-minute judge walkthrough. See [TEST_RESULTS.md](TEST_RESULTS.md) for scoped verification results.
+
+All state is local to the browser and retained across reloads with storage exceptions handled. Reset clears demo state. The demo clock, role, consent, failure states, evidence and session counters are simulated; none represent real clinical results. Session timers use active time, pause at 60 seconds idle or when hidden, and exclude away time after reload. All 75 source records are embedded in the single HTML source; no framework, model or external JS dependency was added. `build_index.py` produces both the served wrapper and a downloadable copy of that same HTML source.
