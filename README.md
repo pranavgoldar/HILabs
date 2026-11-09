@@ -91,3 +91,9 @@ Additional verification:
 python3 tests/test_product_redesign.py
 ENGINE=webkit python3 tests/test_product_redesign.py
 ```
+
+## HiLabs visual style · 9 November 2026
+
+The interface now uses the Satoshi typeface through Fontshare’s webfont API, matching HiLabs’ current website. Reference palette: blue `#2A6AF1`, navy `#072669`, deep navy `#031335`, aqua `#1BBCE4` and purple `#7034EA`; body text `#465167`. Desktop page headings use the website’s 42 px scale, with 28 px phone headings. Pill buttons, soft rounded cards and restrained blue/aqua/purple gradients carry the style across the workspace.
+
+Reference: https://www.hilabs.com/home-b (currently redirects to the homepage). Typeface: https://www.fontshare.com/fonts/satoshi, served through Fontshare under the ITF Free Font License. HiLabs’ logo is used for this explicitly labelled case-study prototype. Clinical warning colors and all human-review gates are retained.

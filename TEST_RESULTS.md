@@ -1,3 +1,13 @@
+# Latest visual validation · 9 November 2026
+
+The HiLabs theme update passed 75 Chromium route/width checks (15 routes at 320, 390, 768, 1366 and 1920 px), plus the existing 39-layout workflow suite. Satoshi 900 is loaded through Fontshare; desktop page headings are 42 px and phone page headings 28 px. The existing human-review workflows, persistent state, retry, consent, escalation and manual closure checks pass with zero console errors. All 12 phone tour positions and timer-boundary checks pass.
+
+Twenty-two route/width WCAG A/AA scans detected zero violations. The session popover remains out of the page flow, so expanding it does not push down the dashboard. Both Excel workbooks and all case facts are unchanged. No new JavaScript library was added; Fontshare is the only new runtime styling dependency, with system-font fallback.
+
+The broader control audit below records the preceding workspace release and was not repeated for this CSS/font update.
+
+---
+
 # Test results · focused workspace redesign
 
 **1270 of 1270 enabled controls respond; 0 console errors.**

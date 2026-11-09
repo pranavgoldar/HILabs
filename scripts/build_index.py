@@ -16,7 +16,7 @@ OUT = ROOT / "index.html"
 FAVICON = (
     "data:image/svg+xml,"
     "%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E"
-    "%3Crect width='32' height='32' rx='8' fill='%230053EF'/%3E"
+    "%3Crect width='32' height='32' rx='8' fill='%232A6AF1'/%3E"
     "%3Ctext x='16' y='21' font-family='Arial' font-weight='700' font-size='13' "
     "fill='white' text-anchor='middle'%3ECW%3C/text%3E%3C/svg%3E"
 )

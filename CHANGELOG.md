@@ -63,3 +63,7 @@ Reviewed the reference prototype’s daily handoff, member and reviewer views. T
 - **Phone clarity:** reduced member-header clutter, the top issue visible early, a persistent call action, and the full workflow in a high-contrast light theme.
 
 The reference’s patient names, 28-dataset scope, clinical scenarios, pricing and alternative metrics were not imported. The submitted five members, twelve datasets, scores, facts and both Excel workbooks are unchanged.
+
+## HiLabs theme · 9 November 2026
+
+Matched the reference website’s Satoshi font, 42 px desktop / 28 px phone heading scale, blue/navy palette, aqua/purple gradients, pill buttons, rounded white cards, and HiLabs wordmark. The dashboard keeps its compact heading and anchored session popover. Phone layouts and clinical status contrast remain readable; case data and workflows are unchanged. Satoshi loads through Fontshare’s webfont API with system-font fallback.
