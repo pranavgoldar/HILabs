@@ -10,6 +10,7 @@ It covers the three screens from the case deck:
 | **Call & note** | Do | Permitted contact routes (dead numbers blocked), a pre-filled assessment to confirm, and a note drafted from Maria's entries that she reviews and signs |
 
 A **Guided demo** button walks a reviewer through Maria's Monday in twelve steps.
+The **How to use** page (`#how-to-use`) explains the roles, shows the data and care-team flowchart, and links to a six-step walkthrough. Open it from the desktop sidebar, the phone’s More menu, or the first-visit welcome screen.
 All members, records and phone numbers are fictional. Nothing calls anyone or writes to a real system.
 
 ## Files

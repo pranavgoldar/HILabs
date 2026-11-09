@@ -67,3 +67,12 @@ The reference’s patient names, 28-dataset scope, clinical scenarios, pricing a
 ## HiLabs theme · 9 November 2026
 
 Matched the reference website’s Satoshi font, 42 px desktop / 28 px phone heading scale, blue/navy palette, aqua/purple gradients, pill buttons, rounded white cards, and HiLabs wordmark. The dashboard keeps its compact heading and anchored session popover. Phone layouts and clinical status contrast remain readable; case data and workflows are unchanged. Satoshi loads through Fontshare’s webfont API with system-font fallback.
+
+
+## How to use · 9 November 2026
+
+Added a plain-language guide at `#how-to-use`, accessible from the desktop sidebar, phone More menu, footer and first-visit welcome. Quick links jump to the people, diagram and practical walkthrough.
+
+The responsive flowchart connects the twelve source datasets to the workbench, Maria’s five-member caseload, Jordan’s co-management of Pranav, call notes, reviewed drafts and simulated CM writeback. RN and LCSW are expanded, and the diagram makes consent, human approval and the feedback loop explicit. Buttons open each role’s queue and each member’s record; six practical steps link to the existing workflow.
+
+Also corrected the queue’s role label when Jordan is selected and ensured the phone menu closes when its current destination is selected. The case facts, scores and Excel workbooks remain unchanged.

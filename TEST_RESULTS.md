@@ -1,3 +1,11 @@
+# Latest guide validation · 9 November 2026
+
+The new How to use page passes Chromium layout checks at 320, 390, 768, 1024, 1440 and 1920 px with no horizontal overflow. Phone and desktop WCAG A/AA scans detect zero violations. The checks cover the phone More menu (including selecting the current page), section shortcuts with keyboard focus, Maria’s five-case queue, Jordan’s one-case queue, all five member links, the contact-plan walkthrough, starting the guided demo and opening the guide from the first-visit welcome. No script errors were recorded.
+
+The existing product regression passes 75 route/width checks, source provenance, medication review, assessment sign-off, receipt history and all three time-model scenarios. Both source Excel hashes remain unchanged. These results use Chromium and emulated phone sizes; this update was not tested on physical phones. WebKit could not run in this session because its host dependencies require unavailable system privileges. Prior release results below are historical and are not new cross-browser results for this guide.
+
+---
+
 # Latest visual validation · 9 November 2026
 
 The HiLabs theme update passed 75 Chromium route/width checks (15 routes at 320, 390, 768, 1366 and 1920 px), plus the existing 39-layout workflow suite. Satoshi 900 is loaded through Fontshare; desktop page headings are 42 px and phone page headings 28 px. The existing human-review workflows, persistent state, retry, consent, escalation and manual closure checks pass with zero console errors. All 12 phone tour positions and timer-boundary checks pass.
